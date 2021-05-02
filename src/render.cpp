@@ -1,5 +1,6 @@
 #include "../include/render.h"
 #include "../include/consts.h"
+#include "../include/position.h"
 
 #define IX(x, y) ((x) + (y) * (NUM_GRIDS_X))
 
@@ -11,9 +12,11 @@ void Render::runSimulation(){
 
 	std::vector<sf::RectangleShape> parkingLot;
 	sf::RectangleShape cab;
+	std::vector<sf::RectangleShape> wall;
 
 	createParkingLot(parkingLot);
 	createCab(cab);
+	createWall(wall);
 	while(this->window.isOpen()){
 		sf::Event e;
                 while(window.pollEvent(e))
@@ -22,7 +25,7 @@ void Render::runSimulation(){
                                 this->window.close();
                 }
                 this->window.clear();
-		drawNDisplay(parkingLot, cab);
+		drawNDisplay(parkingLot, cab, wall);
 	}
 }
 
@@ -66,7 +69,47 @@ void Render::createCab(sf::RectangleShape& cab){
 	cab.setOutlineColor(sf::Color::White);
 }
 
-void Render::drawNDisplay(std::vector<sf::RectangleShape>& pl, sf::RectangleShape& cab){
+void Render::createWall(std::vector<sf::RectangleShape>& wall){
+	WallPosition wp;
+	sf::RectangleShape rect;
+	sf::Vector2f offset = getOffset();
+	for (int i = 0; i < NUM_WALLS; i++){
+		wp = this->env.wall.getWallPosition(i);
+		if(wp.x0 == wp.x1) // horizontal wall
+		{ 
+			rect.setOrigin(sf::Vector2f(0, WALL_Y/2));
+			rect.setPosition(sf::Vector2f(\
+						offset.x + GRID_SIZE*wp.x1,\
+						offset.y + GRID_SIZE*wp.y1\
+						));
+			rect.setSize(sf::Vector2f(GRID_SIZE, WALL_Y));
+			rect.setFillColor(sf::Color::Blue);
+			rect.setOutlineThickness(1);
+			rect.setOutlineColor(sf::Color::White);
+			wall.push_back(rect);
+		}
+		else if (wp.y0 == wp.y1) // vertical wall
+		{
+			rect.setOrigin(sf::Vector2f(WALL_X/2, 0));
+			rect.setPosition(sf::Vector2f(\
+						offset.x + GRID_SIZE*wp.x1,\
+						offset.y + GRID_SIZE*wp.y1\
+						));
+			rect.setSize(sf::Vector2f(WALL_X, GRID_SIZE));
+			rect.setFillColor(sf::Color::Blue);
+			rect.setOutlineThickness(1);
+			rect.setOutlineColor(sf::Color::White);
+			wall.push_back(rect);
+		}
+	}
+}
+
+void Render::drawNDisplay(\
+  std::vector<sf::RectangleShape>& pl,\
+  sf::RectangleShape& cab,\
+  std::vector<sf::RectangleShape>& wall\
+){
+
 	for (int i = 0; i < NUM_GRIDS_X; i++){
 		for (int j = 0; j < NUM_GRIDS_Y; j++){
 		this->window.draw(pl[IX(i,j)]);
@@ -74,5 +117,8 @@ void Render::drawNDisplay(std::vector<sf::RectangleShape>& pl, sf::RectangleShap
 	}
 
 	this->window.draw(cab);
+	for (int i = 0; i < wall.size(); i++){
+		this->window.draw(wall[i]);
+	}
 	this->window.display();
 }

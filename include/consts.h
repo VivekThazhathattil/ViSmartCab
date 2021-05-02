@@ -7,3 +7,8 @@
 #define NUM_GRIDS_Y 5
 #define CAB_X 30
 #define CAB_Y 80
+#define NUM_WALLS 5
+#define WALL_X 10 // width of wall if horizontal
+#define WALL_Y 10 // width of wall if vertical
+
+// wall location hardcoded into src/wall.cpp
