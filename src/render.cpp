@@ -14,9 +14,20 @@ void Render::runSimulation(){
 	sf::RectangleShape cab;
 	std::vector<sf::RectangleShape> wall;
 
+	sf::Font font; // for RGBY markings
+	if(!font.loadFromFile("res/arial.ttf")){
+		printf("Error in loading font from file\n");
+	}
+	sf::Text textR;
+	sf::Text textG;
+	sf::Text textB;
+	sf::Text textY;
+
 	createParkingLot(parkingLot);
+	createRGBYMarkings(textR, textG, textB, textY, font);
 	createCab(cab);
 	createWall(wall);
+	createPassenger(textR, textG, textB, textY);
 	while(this->window.isOpen()){
 		sf::Event e;
                 while(window.pollEvent(e))
@@ -25,7 +36,7 @@ void Render::runSimulation(){
                                 this->window.close();
                 }
                 this->window.clear();
-		drawNDisplay(parkingLot, cab, wall);
+		drawNDisplay(parkingLot, cab, wall, textR, textG, textB, textY);
 	}
 }
 
@@ -52,6 +63,58 @@ void Render::createParkingLot(std::vector<sf::RectangleShape>& pl){
 			pl.push_back(rect);
 		}
 	}
+}
+
+void Render::createRGBYMarkings(sf::Text& R, sf::Text& G ,sf::Text& B, sf::Text& Y, sf::Font& font){
+	sf::Vector2f offset = getOffset();
+
+	R.setFont(font);	
+	G.setFont(font);	
+	B.setFont(font);	
+	Y.setFont(font);	
+
+	R.setString("R");
+	G.setString("G");
+	B.setString("B");
+	Y.setString("Y");
+
+	R.setCharacterSize(28);
+	G.setCharacterSize(28);
+	B.setCharacterSize(28);
+	Y.setCharacterSize(28);
+
+	R.setFillColor(sf::Color::White);
+	G.setFillColor(sf::Color::White);
+	B.setFillColor(sf::Color::White);
+	Y.setFillColor(sf::Color::White);
+
+        R.setStyle(sf::Text::Bold);
+        G.setStyle(sf::Text::Bold);
+        B.setStyle(sf::Text::Bold);
+        Y.setStyle(sf::Text::Bold);
+
+
+	R.setOrigin(\
+			R.getGlobalBounds().width/2,\
+			R.getGlobalBounds().height/2\
+		   );
+	G.setOrigin(\
+			G.getGlobalBounds().width/2,\
+			G.getGlobalBounds().height/2\
+		   );
+	B.setOrigin(\
+			B.getGlobalBounds().width/2,\
+			B.getGlobalBounds().height/2\
+		   );
+	Y.setOrigin(\
+			Y.getGlobalBounds().width/2,\
+			Y.getGlobalBounds().height/2\
+		   );
+
+	R.setPosition(this->env.R.x, this->env.R.y);
+	G.setPosition(this->env.G.x, this->env.G.y);
+	B.setPosition(this->env.B.x, this->env.B.y);
+	Y.setPosition(this->env.Y.x, this->env.Y.y);
 }
 
 void Render::createCab(sf::RectangleShape& cab){
@@ -104,10 +167,46 @@ void Render::createWall(std::vector<sf::RectangleShape>& wall){
 	}
 }
 
+void Render::createPassenger( sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y){
+
+	switch(this->env.passenger.getCode(0)){
+		case 'R':
+			R.setFillColor(sf::Color::Magenta);
+			break;
+		case 'G':
+			G.setFillColor(sf::Color::Magenta);
+			break;
+		case 'B':
+			B.setFillColor(sf::Color::Magenta);
+			break;
+		case 'Y':
+			Y.setFillColor(sf::Color::Magenta);
+			break;
+	}	
+	switch(this->env.passenger.getCode(1)){
+		case 'R':
+			R.setFillColor(sf::Color::Cyan);
+			break;
+		case 'G':
+			G.setFillColor(sf::Color::Cyan);
+			break;
+		case 'B':
+			B.setFillColor(sf::Color::Cyan);
+			break;
+		case 'Y':
+			Y.setFillColor(sf::Color::Cyan);
+			break;
+	}	
+}
+
 void Render::drawNDisplay(\
   std::vector<sf::RectangleShape>& pl,\
   sf::RectangleShape& cab,\
-  std::vector<sf::RectangleShape>& wall\
+  std::vector<sf::RectangleShape>& wall,\
+  sf::Text& R,\
+  sf::Text& G,\
+  sf::Text& B,\
+  sf::Text& Y\
 ){
 
 	for (int i = 0; i < NUM_GRIDS_X; i++){
@@ -115,6 +214,11 @@ void Render::drawNDisplay(\
 		this->window.draw(pl[IX(i,j)]);
 		}
 	}
+
+	this->window.draw(R);
+	this->window.draw(G);
+	this->window.draw(B);
+	this->window.draw(Y);
 
 	this->window.draw(cab);
 	for (int i = 0; i < wall.size(); i++){

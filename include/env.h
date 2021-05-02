@@ -7,6 +7,7 @@ class Env{
 		Wall wall;
 		Cab cab;
 		Passenger passenger;
+		Position R,G,B,Y;
 		int score;
 		int timeSpent;
 		Env();

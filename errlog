@@ -1,5 +1,67 @@
 g++ -g -std=c++17 -c ./src/*.cpp
-mkdir -p obj && mv ./*.o ./obj
-g++ -g ./obj/*.o -o main -lsfml-graphics -lsfml-window -lsfml-system
-chmod 755 ./main
-./main
+./src/render.cpp: In member function ‘void Render::createRGBYMarkings(sf::Text, sf::Text, sf::Text, sf::Text, sf::Font)’:
+./src/render.cpp:71:4: error: ‘class sf::Text’ has no member named ‘Font’
+   71 |  R.Font(font);
+      |    ^~~~
+./src/render.cpp:72:4: error: ‘class sf::Text’ has no member named ‘Font’
+   72 |  G.Font(font);
+      |    ^~~~
+./src/render.cpp:73:4: error: ‘class sf::Text’ has no member named ‘Font’
+   73 |  B.Font(font);
+      |    ^~~~
+./src/render.cpp:74:4: error: ‘class sf::Text’ has no member named ‘Font’
+   74 |  Y.Font(font);
+      |    ^~~~
+./src/render.cpp:86:29: warning: ‘void sf::Text::setColor(const sf::Color&)’ is deprecated [-Wdeprecated-declarations]
+   86 |  R.setColor(sf::Color::White);
+      |                             ^
+In file included from /usr/include/SFML/Graphics.hpp:51,
+                 from ./src/../include/render.h:1,
+                 from ./src/render.cpp:1:
+/usr/include/SFML/Graphics/Text.hpp:210:26: note: declared here
+  210 |     SFML_DEPRECATED void setColor(const Color& color);
+      |                          ^~~~~~~~
+./src/render.cpp:87:29: warning: ‘void sf::Text::setColor(const sf::Color&)’ is deprecated [-Wdeprecated-declarations]
+   87 |  G.setColor(sf::Color::White);
+      |                             ^
+In file included from /usr/include/SFML/Graphics.hpp:51,
+                 from ./src/../include/render.h:1,
+                 from ./src/render.cpp:1:
+/usr/include/SFML/Graphics/Text.hpp:210:26: note: declared here
+  210 |     SFML_DEPRECATED void setColor(const Color& color);
+      |                          ^~~~~~~~
+./src/render.cpp:88:29: warning: ‘void sf::Text::setColor(const sf::Color&)’ is deprecated [-Wdeprecated-declarations]
+   88 |  B.setColor(sf::Color::White);
+      |                             ^
+In file included from /usr/include/SFML/Graphics.hpp:51,
+                 from ./src/../include/render.h:1,
+                 from ./src/render.cpp:1:
+/usr/include/SFML/Graphics/Text.hpp:210:26: note: declared here
+  210 |     SFML_DEPRECATED void setColor(const Color& color);
+      |                          ^~~~~~~~
+./src/render.cpp:89:29: warning: ‘void sf::Text::setColor(const sf::Color&)’ is deprecated [-Wdeprecated-declarations]
+   89 |  Y.setColor(sf::Color::White);
+      |                             ^
+In file included from /usr/include/SFML/Graphics.hpp:51,
+                 from ./src/../include/render.h:1,
+                 from ./src/render.cpp:1:
+/usr/include/SFML/Graphics/Text.hpp:210:26: note: declared here
+  210 |     SFML_DEPRECATED void setColor(const Color& color);
+      |                          ^~~~~~~~
+./src/render.cpp:107:78: error: expected ‘)’ before ‘;’ token
+  107 |  R.setPosition(sf::Vector2f( offset.x + GRID_SIZE/2, offset.y + GRID_SIZE/2 );
+      |               ~                                                              ^
+      |                                                                              )
+./src/render.cpp:108:94: error: expected ‘)’ before ‘;’ token
+  108 |  G.setPosition(sf::Vector2f( offset.x + NUM_GRIDS_X*4 + GRID_SIZE/2, offset.y + GRID_SIZE/2 );
+      |               ~                                                                              ^
+      |                                                                                              )
+./src/render.cpp:109:110: error: expected ‘)’ before ‘;’ token
+  109 |  B.setPosition(sf::Vector2f( offset.x + NUM_GRIDS_X*3 + GRID_SIZE/2, offset.y + NUM_GRIDS_Y*4 + GRID_SIZE/2 );
+      |               ~                                                                                              ^
+      |                                                                                                              )
+./src/render.cpp:110:94: error: expected ‘)’ before ‘;’ token
+  110 |  Y.setPosition(sf::Vector2f( offset.x + GRID_SIZE/2, offset.y + NUM_GRIDS_Y*4 + GRID_SIZE/2 );
+      |               ~                                                                              ^
+      |                                                                                              )
+make: *** [Makefile:2: build] Error 1

@@ -1,8 +1,8 @@
 [done] 1. draw a 5x5 grid, 
 [done] 2. yellow rectangle for car (which turns green, when a passenger enters it)
-3. R,G,B,Y markings on the corners of the grid
-4. get random pickup location and destination for the passenger, color the R,G,B,Y source as orange and destination as blue.
-5. add some walls to the state. make the walls as a class which can be passed as arguments to the state class.
+[done] 3. R,G,B,Y markings on the corners of the grid
+[done] 4. get random pickup location and destination for the passenger, color the R,G,B,Y source as magenta and destination as cyan.
+[done] 5. add some walls to the state. make the walls as a class which can be passed as arguments to the state class.
 6. env is the main class. It will have three objects, passenger, car and walls, score, timeSpent and so on.
 7. car object: will have two struct positions -  one indicating its spawn position and the other, its current position. It will have a member function for handling actions. You pass the action as argument and the appropriate movement of the car's position would be done. Car object would also have a bool for handling whether the passenger is inside the car or not. It will have a member function for executing pickup and dropoff
 8. passenger object: it will have a member function which will toggle the isPassengerInside bool if he enters/exits the cab. Its variables include the pickup and drop-off locations.

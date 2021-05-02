@@ -12,12 +12,17 @@ class Render{
 
 		void runSimulation();
 		void createParkingLot(std::vector<sf::RectangleShape>& parkingLot);
-		void createRGBYMarkings();
+		void createRGBYMarkings(sf::Text& R, sf::Text& G ,sf::Text& B, sf::Text& Y, sf::Font& font);
 		void createCab(sf::RectangleShape& cab);
 		void createWall(std::vector<sf::RectangleShape>& wall);
-		void createPassenger();
+		void createPassenger( sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y);
 		void drawNDisplay(\
 				std::vector<sf::RectangleShape>& pl,\
 			       	sf::RectangleShape& cab,\
-			       	std::vector<sf::RectangleShape>& wall);
+			       	std::vector<sf::RectangleShape>& wall,\
+  				sf::Text& R,\
+  				sf::Text& G,\
+  				sf::Text& B,\
+  				sf::Text& Y\
+				);
 };
