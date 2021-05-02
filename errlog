@@ -1,0 +1,10 @@
+g++ -g -std=c++17 -c ./src/*.cpp
+mkdir -p obj && mv ./*.o ./obj
+g++ -g ./obj/*.o -o main -lsfml-graphics -lsfml-window -lsfml-system
+/usr/bin/ld: ./obj/render.o: in function `Render::Render()':
+/mnt/sda_12/c++_course/smartcab/./src/render.cpp:4: undefined reference to `Env::Env()'
+/usr/bin/ld: /mnt/sda_12/c++_course/smartcab/./src/render.cpp:4: undefined reference to `Env::~Env()'
+/usr/bin/ld: ./obj/render.o: in function `Render::~Render()':
+/mnt/sda_12/c++_course/smartcab/./src/render.cpp:5: undefined reference to `Env::~Env()'
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:4: build] Error 1
