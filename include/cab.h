@@ -9,4 +9,5 @@ class Cab{
 		~Cab();
 		void performAction();
 		void setRandomSpawnPosition();
+		int getSpawnPosition(char i);
 };

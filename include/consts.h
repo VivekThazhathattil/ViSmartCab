@@ -5,3 +5,5 @@
 #define GRID_SIZE 100
 #define NUM_GRIDS_X 5
 #define NUM_GRIDS_Y 5
+#define CAB_X 30
+#define CAB_Y 80

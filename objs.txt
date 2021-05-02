@@ -1,5 +1,5 @@
 [done] 1. draw a 5x5 grid, 
-2. yellow rectangle for car (which turns green, when a passenger enters it)
+[done] 2. yellow rectangle for car (which turns green, when a passenger enters it)
 3. R,G,B,Y markings on the corners of the grid
 4. get random pickup location and destination for the passenger, color the R,G,B,Y source as orange and destination as blue.
 5. add some walls to the state. make the walls as a class which can be passed as arguments to the state class.

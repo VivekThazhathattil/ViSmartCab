@@ -3,13 +3,12 @@
 #include "passenger.h"
 
 class Env{
-	private:
+	public:
 		Wall wall;
 		Cab cab;
 		Passenger passenger;
 		int score;
 		int timeSpent;
-	public:	
 		Env();
 		~Env();
 		void updateScore(int amount);
