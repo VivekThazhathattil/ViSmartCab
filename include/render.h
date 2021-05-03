@@ -34,4 +34,23 @@ class Render{
   				sf::Text& B,\
   				sf::Text& Y\
 				);
+		void stepFigure(\
+				int nextState,\
+				std::vector<sf::RectangleShape>& pl,\
+			       	sf::RectangleShape& cab,\
+			       	std::vector<sf::RectangleShape>& wall,\
+  				sf::Text& R,\
+  				sf::Text& G,\
+  				sf::Text& B,\
+  				sf::Text& Y\
+				);
+		void learn(\
+  				std::vector<sf::RectangleShape>& pl,\
+			       	sf::RectangleShape& cab,\
+			       	std::vector<sf::RectangleShape>& wall,\
+  				sf::Text& R,\
+  				sf::Text& G,\
+  				sf::Text& B,\
+  				sf::Text& Y\
+				);
 };

@@ -3,6 +3,7 @@
 #include "../include/position.h"
 
 #define IX(x, y) ((x) + (y) * (NUM_GRIDS_X))
+#define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
 
 Render::Render() : window(sf::RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "SMARTCAB in C++!", sf::Style::Close)) {}
 Render::~Render() {}
@@ -30,7 +31,7 @@ void Render::runSimulation(){
 /*	printf("%d\n",this->env.encodeNEditState(3,1,2,0));
 	updateFigure(cab, wall, textR, textG, textB, textY);*/
 
-	while(this->window.isOpen()){
+/*	while(this->window.isOpen()){
 		sf::Event e;
                 while(window.pollEvent(e))
                 {
@@ -39,7 +40,9 @@ void Render::runSimulation(){
                 }
                 this->window.clear();
 		drawNDisplay(parkingLot, cab, wall, textR, textG, textB, textY);
-	}
+	} */
+
+	this->learn(parkingLot, cab, wall, textR, textG, textB, textY );
 }
 
 void Render::updateFigure(\
@@ -134,8 +137,8 @@ void Render::createRGBYMarkings(sf::Text& R, sf::Text& G ,sf::Text& B, sf::Text&
 }
 
 void Render::createCab(sf::RectangleShape& cab){
-	int i = this->env.cab.getSpawnPosition('x');
-	int j = this->env.cab.getSpawnPosition('y');
+	int i = this->env.cab.getCurrPosition('x');
+	int j = this->env.cab.getCurrPosition('y');
 	sf::Vector2f offset = getOffset();
 	cab.setOrigin(sf::Vector2f(CAB_X/2, CAB_Y/2));
 	cab.setPosition(sf::Vector2f(\
@@ -143,7 +146,10 @@ void Render::createCab(sf::RectangleShape& cab){
 				offset.y + j*GRID_SIZE + GRID_SIZE/2\
 				));
 	cab.setSize(sf::Vector2f(CAB_X,CAB_Y));
-	cab.setFillColor(sf::Color::Yellow);
+	if(this->env.passenger.getPassengerStatus())
+		cab.setFillColor(sf::Color::Green);
+	else
+		cab.setFillColor(sf::Color::Yellow);
 	cab.setOutlineThickness(2);
 	cab.setOutlineColor(sf::Color::White);
 }
@@ -249,4 +255,100 @@ void Render::drawNDisplay(\
 		this->window.draw(wall[i]);
 	}
 	this->window.display();
+}
+
+void Render::learn(\
+  		std::vector<sf::RectangleShape>& pl,\
+		sf::RectangleShape& cab,\
+	       	std::vector<sf::RectangleShape>& wall,\
+		sf::Text& textR,\
+		sf::Text& textG,\
+		sf::Text& textB,\
+		sf::Text& textY\
+){
+	std::srand(time(0));
+	int epochs, penalties, reward;
+	bool done;
+	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
+	float oldQ, newQ, nextMaxQ;
+	int actionCode;
+	for (int i = 0; i < NUM_ITERATIONS && this->window.isOpen(); i++){
+		sf::Event e;
+                while(window.pollEvent(e))
+                {
+                        if (e.type == sf::Event::Closed)
+                                this->window.close();
+                }
+                this->window.clear();
+
+		this->env.reset(); //reset our sample space
+		updateFigure(cab, wall, textR, textG, textB, textY);
+		cabI = this->env.cab.getSpawnPosition('x');
+		cabJ = this->env.cab.getSpawnPosition('y');
+		if (this->env.passenger.getPassengerStatus())
+			passengerIdx = 4;
+		else{
+			if(this->env.passenger.getCode(0) == 'R')
+				passengerIdx = 0;
+			else if(this->env.passenger.getCode(0) == 'G')
+				passengerIdx = 1;
+			else if(this->env.passenger.getCode(0) == 'B')
+				passengerIdx = 2;
+			else if(this->env.passenger.getCode(0) == 'Y')
+				passengerIdx = 3;
+		}	
+		if(this->env.passenger.getCode(1) == 'R')
+			destIdx = 0;
+		else if(this->env.passenger.getCode(1) == 'G')
+			destIdx = 1;
+		else if(this->env.passenger.getCode(1) == 'B')
+			destIdx = 2;
+		else if(this->env.passenger.getCode(1) == 'Y')
+			destIdx = 3;
+		state = this->env.encode(cabI, cabJ, passengerIdx, destIdx);
+		epochs = 0;
+		penalties = 0;
+		reward = 0;
+		done = false;
+		while(!done){
+			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+			if(r < EPSILON)
+				actionCode = std::rand()%NUM_ACTIONS; //exploration
+			else
+				actionCode = this->env.getActionForMaxQValue(state); //exploitation
+			this->env.step(actionCode, state, nextState, reward, done);
+			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
+			oldQ = this->env.qTable[E(state,actionCode)];
+			nextMaxQ = this->env.getMaxQForState(state);
+			newQ = ((1-ALPHA) * oldQ)+\
+			       (ALPHA * (reward + GAMMA * nextMaxQ));
+			this->env.qTable[E(state, actionCode)] = newQ;
+			if (reward == -10)
+				penalties += 1;
+			state = nextState;
+			epochs += 1;
+
+			drawNDisplay(pl, cab, wall, textR, textG, textB, textY);
+		}
+
+	}
+}
+
+void Render::stepFigure(\
+		int nextState,\
+		std::vector<sf::RectangleShape>& pl,\
+		sf::RectangleShape& cab,\
+	       	std::vector<sf::RectangleShape>& wall,\
+		sf::Text& textR,\
+		sf::Text& textG,\
+		sf::Text& textB,\
+		sf::Text& textY\
+){
+	int code = nextState;
+	int cabI, cabJ, passengerIdx, destIdx;
+	this->env.decode(code, cabI, cabJ, passengerIdx, destIdx);
+	this->env.cab.setCurrPosition(cabI, cabJ);
+	this->createCab(cab);
+	this->createWall(wall);
+	this->createPassenger(textR, textG, textB, textY);
 }

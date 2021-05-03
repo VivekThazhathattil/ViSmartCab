@@ -12,22 +12,19 @@ class Env{
 		int numCabXStates;
 		int numCabYStates;
 		RewardTable rewardTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
-		float qTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
 
 		void setupEncodeArr();
 		void initializeRewardTable();
-		void resetQTable();
-		void updateQTable();
-		int getActionForMaxQValue(int& state);
 
-		void learn(); // learning algorithm
-		void reset(); // reset the whole world
+		void learn(); // learning algorithm (headless with no gui)
 
 		int getNextState(int state, int action);
 		int getReward(int state, int action);
 		bool isDone(int state, int action);
 
 	public:
+		float qTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
+
 		Wall wall;
 		Cab cab;
 		Passenger passenger;
@@ -42,4 +39,11 @@ class Env{
 										// spawn locations
 		int encode( int cabI, int cabJ, int passengerIdx, int destIdx );  // only encodes the state
 		void decode( int code, int& cabI, int& cabJ, int& passengerIdx, int& destIdx);
+
+		void reset(); // reset the whole world
+		void resetQTable();
+		void updateQTable();
+		int getActionForMaxQValue(int& state);
+		void step(int actionCode, int state, int& nextState, int& reward, bool& done);
+		float getMaxQForState(int& state);
 };

@@ -11,4 +11,6 @@ class Cab{
 		void setRandomSpawnPosition();
 		int getSpawnPosition(char i);
 		void setSpecificSpawnPosition(int x, int y);
+		int getCurrPosition(char i);
+		void setCurrPosition(int& x, int& y);
 };

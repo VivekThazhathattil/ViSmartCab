@@ -21,6 +21,7 @@ class Passenger{
 		char getCode(int flag); // flag = 0 -> pickup, flag = 1 -> dropoff
 		int getPos(int i, int j); // i : 0=pickUpPos 1=dropOffPos, j: 0=x 1=y
 		bool getPassengerStatus(); // is inside the cab or not
+		void setPassengerStatus(bool val);
 };
 
 int setCoords(int key, char coord);

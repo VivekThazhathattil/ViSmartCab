@@ -1,6 +1,11 @@
 g++ -g -std=c++17 -c ./src/*.cpp
-mkdir -p obj && mv ./*.o ./obj
-g++ -g ./obj/*.o -o main -lsfml-graphics -lsfml-window -lsfml-system
-chmod 755 ./main
-./main
-58
+./src/render.cpp: In member function ‘void Render::runSimulation()’:
+./src/render.cpp:45:14: error: no matching function for call to ‘Render::learn()’
+   45 |  this->learn();
+      |              ^
+In file included from ./src/render.cpp:1:
+./src/../include/render.h:37:8: note: candidate: ‘void Render::learn(std::vector<sf::RectangleShape>&, sf::RectangleShape&, std::vector<sf::RectangleShape>&, sf::Text&, sf::Text&, sf::Text&, sf::Text&)’
+   37 |   void learn(\
+      |        ^~~~~
+./src/../include/render.h:37:8: note:   candidate expects 7 arguments, 0 provided
+make: *** [Makefile:2: build] Error 1

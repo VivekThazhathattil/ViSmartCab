@@ -12,6 +12,16 @@ int Cab::getSpawnPosition(char i){
 	else return this->spawnPos.y;
 }
 
+int Cab::getCurrPosition(char i){
+	if (i == 'x') return this->currPos.x;
+	else return this->currPos.y;
+}
+
+void Cab::setCurrPosition(int& x, int& y){
+	this->currPos.x = x;
+	this->currPos.y = y;
+}
+
 void Cab::setRandomSpawnPosition(){
 	std::srand(time(0));
 	this->spawnPos.x = std::rand()%5;

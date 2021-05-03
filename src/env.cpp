@@ -236,11 +236,12 @@ void Env::learn(){
 		reward = 0;
 		done = false;
 		while(!done){
-			if(float(std::rand())/float((std::RAND_MAX)) < EPSILON)
-				actionCode = std::rand()%6; //exploration
+			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+			if(r < EPSILON)
+				actionCode = std::rand()%NUM_ACTIONS; //exploration
 			else
 				actionCode = this->getActionForMaxQValue(state); //exploitation
-			this->env.step(actionCode, nextState, reward, done);
+			this->step(actionCode, state, nextState, reward, done);
 			oldQ = this->qTable[E(state,actionCode)];
 			nextMaxQ = this->getMaxQForState(state);
 			newQ = ((1-ALPHA) * oldQ)+\
@@ -257,10 +258,44 @@ void Env::learn(){
 
 int Env::getActionForMaxQValue(int& state){
 /* Looks in the QTable for a particular state and find the action with the max q-value*/
+	float maxVal = - 10000.0;
+	int jCandidate = 0;
+	int j;
+	for(j = 0; j < NUM_ACTIONS; j++){
+		if(this->qTable[E(state,j)] > maxVal){
+			maxVal = this->qTable[E(state,j)];
+			jCandidate = j;
+		}
+	}
+	return j;
 }
 
-int Env::step(int actionCode, int& nextState, int& reward, bool& done){
+void Env::step(int actionCode, int state, int& nextState, int& reward, bool& done){
+	int code = state;
+	int cabI, cabJ, passengerIdx, destIdx;
+	decode(code, cabI, cabJ, passengerIdx, destIdx);
+
+	nextState = this->getNextState(state, actionCode);
+	if (!this->passenger.getPassengerStatus() && passengerIdx == 4)
+		this->passenger.setPassengerStatus(true);
+	reward = this->getReward(state, actionCode);
+	done = this->isDone(state, actionCode);
 }
 
-float Env::getMaxQForState(int state){
+float Env::getMaxQForState(int& state){
+	float maxVal = - 10000.0;
+	int jCandidate = 0;
+	for(int j = 0; j < NUM_ACTIONS; j++){
+		if(this->qTable[E(state,j)] > maxVal){
+			maxVal = this->qTable[E(state,j)];
+			jCandidate = j;
+		}
+	}
+	return maxVal;
+}
+
+void Env::reset(){
+/* reset cab position, passenger position */
+	this->cab.setRandomSpawnPosition();
+	this->passenger.setRandomSpawnAndDropPosition();
 }

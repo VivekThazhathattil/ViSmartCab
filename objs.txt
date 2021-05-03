@@ -19,3 +19,8 @@
 	* also make a variable maxTime and currTime and update accordingly.
 
 Problem: * when to change isPassengerInCab bool? inside getNextState?? ans) you dont' need to change isPassengerInCab for getNextState. Just check if the passenger is in the cab or not by using PassengerIdx to be 4 or not 4. The states will differ only by this change of PassengerIdx in the scenario of the passenger entering or exiting the cab.
+
+find a way to display the training with perceptible movement of the cab.
+
+* need more data on screen: Title, iteration no., current direction
+* wall collision not properly detected : fix issue

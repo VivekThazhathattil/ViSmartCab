@@ -19,6 +19,8 @@ void Passenger::setRandomSpawnAndDropPosition(){
 	this->pickUpPos.y = setCoords(true, loc1,'y');
 	this->dropOffPos.x = setCoords(false, loc2,'x');
 	this->dropOffPos.y = setCoords(false, loc2,'y');
+	this->currPos.x = this->pickUpPos.x;
+	this->currPos.y = this->pickUpPos.y;
 }
 
 void Passenger::setSpecificSpawnAndDropPosition(int s, int d) {
@@ -74,6 +76,9 @@ void Passenger::setSpecificSpawnAndDropPosition(int s, int d) {
 			this->dropOffPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
 	}
+
+	this->currPos.x = this->pickUpPos.x;
+	this->currPos.y = this->pickUpPos.y;
 
 } //Problem: source (s) can be inside the taxi, which is not a valid spawn location
 // In that case, retain the previous spawn location. s= 0,1,2,3,4 corresponds to R,G,B,Y,insideCab
@@ -150,4 +155,8 @@ int Passenger::getPos(int i,int j){
 
 bool Passenger::getPassengerStatus(){
 	return this->isPassengerInCab;
+}
+
+void Passenger::setPassengerStatus(bool val){
+	this->isPassengerInCab = val;
 }
