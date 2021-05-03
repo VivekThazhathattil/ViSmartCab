@@ -24,7 +24,7 @@ Env::~Env() {
 
 int Env::encode( int cabI, int cabJ, int passengerIdx, int destIdx){
 	this->cab.setSpecificSpawnPosition(cabI, cabJ);
-//	this->passenger.setSpecificSpawnAndDropPosition(passengerIdx, destIdx);
+	this->passenger.setSpecificSpawnAndDropPosition(passengerIdx, destIdx);
 	return cabI +\
 		this->numCabXStates * cabJ +\
 		this->numCabXStates * this->numCabYStates * passengerIdx +\

@@ -11,6 +11,15 @@ class Render{
 		~Render();
 
 		void runSimulation();
+		void updateFigure(\
+				sf::RectangleShape& cab,\
+			       	std::vector<sf::RectangleShape>& wall,\
+				sf::Text& textR,\
+				sf::Text& textG,\
+				sf::Text& textB,\
+				sf::Text& textY\
+				);
+		void resetTextColor(sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y);
 		void createParkingLot(std::vector<sf::RectangleShape>& parkingLot);
 		void createRGBYMarkings(sf::Text& R, sf::Text& G ,sf::Text& B, sf::Text& Y, sf::Font& font);
 		void createCab(sf::RectangleShape& cab);

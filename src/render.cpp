@@ -25,11 +25,10 @@ void Render::runSimulation(){
 
 	createParkingLot(parkingLot);
 	createRGBYMarkings(textR, textG, textB, textY, font);
-	createCab(cab);
-	createWall(wall);
-	createPassenger(textR, textG, textB, textY);
+	updateFigure(cab, wall, textR, textG, textB, textY);
 
 	printf("%d",this->env.encode(3,1,2,0));
+	updateFigure(cab, wall, textR, textG, textB, textY);
 
 	while(this->window.isOpen()){
 		sf::Event e;
@@ -41,6 +40,20 @@ void Render::runSimulation(){
                 this->window.clear();
 		drawNDisplay(parkingLot, cab, wall, textR, textG, textB, textY);
 	}
+}
+
+void Render::updateFigure(\
+		sf::RectangleShape& cab,\
+	       	std::vector<sf::RectangleShape>& wall,\
+		sf::Text& textR,\
+		sf::Text& textG,\
+		sf::Text& textB,\
+		sf::Text& textY\
+
+){
+	createCab(cab);
+	createWall(wall);
+	createPassenger(textR, textG, textB, textY);
 }
 
 sf::Vector2f getOffset(){
@@ -170,8 +183,16 @@ void Render::createWall(std::vector<sf::RectangleShape>& wall){
 	}
 }
 
+void Render::resetTextColor(sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y){
+	R.setFillColor(sf::Color::White);
+	G.setFillColor(sf::Color::White);
+	B.setFillColor(sf::Color::White);
+	Y.setFillColor(sf::Color::White);
+}
+
 void Render::createPassenger( sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y){
 
+	this->resetTextColor(R,G,B,Y);
 	switch(this->env.passenger.getCode(0)){
 		case 'R':
 			R.setFillColor(sf::Color::Magenta);

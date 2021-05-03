@@ -25,21 +25,25 @@ void Passenger::setSpecificSpawnAndDropPosition(int s, int d) {
 	switch(s){
 		case 0:
 			this->isPassengerInCab = false;
+			this->pickUpCode = 'R';
 			this->pickUpPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->pickUpPos.y = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 1:
 			this->isPassengerInCab = false;
+			this->pickUpCode = 'G';
 			this->pickUpPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			this->pickUpPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 2:
 			this->isPassengerInCab = false;
+			this->pickUpCode = 'B';
 			this->pickUpPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*3 + GRID_SIZE/2;
 			this->pickUpPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
 		case 3:
 			this->isPassengerInCab = false;
+			this->pickUpCode = 'Y';
 			this->pickUpPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->pickUpPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
@@ -50,18 +54,22 @@ void Passenger::setSpecificSpawnAndDropPosition(int s, int d) {
 
 	switch(d){ // didn't implement check for different s and d, assuming the user invokes correctly
 		case 0:
+			this->dropOffCode = 'R';
 			this->dropOffPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->dropOffPos.y = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 1:
+			this->dropOffCode = 'G';
 			this->dropOffPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			this->dropOffPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 2:
+			this->dropOffCode = 'B';
 			this->dropOffPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*3 + GRID_SIZE/2;
 			this->dropOffPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
 		case 3:
+			this->dropOffCode = 'Y';
 			this->dropOffPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->dropOffPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
