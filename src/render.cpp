@@ -28,6 +28,9 @@ void Render::runSimulation(){
 	createCab(cab);
 	createWall(wall);
 	createPassenger(textR, textG, textB, textY);
+
+	printf("%d",this->env.encode(3,1,2,0));
+
 	while(this->window.isOpen()){
 		sf::Event e;
                 while(window.pollEvent(e))

@@ -11,4 +11,7 @@
 #define WALL_X 10 // width of wall if horizontal
 #define WALL_Y 10 // width of wall if vertical
 
+#define NUM_PASSENGER_STATES 5
+#define NUM_DEST_STATES 4
+
 // wall location hardcoded into src/wall.cpp
