@@ -1,4 +1,6 @@
 #include "../include/env.h"
+#include <time.h>
+#include <cstdlib>
 #define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
 
 Env::Env() {
@@ -61,6 +63,11 @@ void Env::initializeRewardTable(){
 		}
 	}
 }	
+
+void Env::resetQTable(){
+	for (int i = 0; i<  NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS ; i++)
+		this->qTable[i] = 0;
+}
 
 void Env::decode( int code, int& cabI, int& cabJ, int& passengerIdx, int& destIdx){
 	destIdx = (int)(code/(this->numCabXStates * this->numCabYStates * this->numPassengerStates));
@@ -190,4 +197,70 @@ bool Env::isDone(int state, int action){
 			break;
 	}
 	return flag;
+}
+
+void Env::learn(){
+	std::srand(time(0));
+	int epochs, penalties, reward;
+	bool done;
+	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
+	float oldQ, newQ, nextMaxQ;
+	int actionCode;
+	for (int i = 0; i < NUM_ITERATIONS; i++){
+		this->reset(); //reset our sample space
+		cabI = this->cab.getSpawnPosition('x');
+		cabJ = this->cab.getSpawnPosition('y');
+		if (this->passenger.getPassengerStatus())
+			passengerIdx = 4;
+		else{
+			if(this->passenger.getCode(0) == 'R')
+				passengerIdx = 0;
+			else if(this->passenger.getCode(0) == 'G')
+				passengerIdx = 1;
+			else if(this->passenger.getCode(0) == 'B')
+				passengerIdx = 2;
+			else if(this->passenger.getCode(0) == 'Y')
+				passengerIdx = 3;
+		}	
+		if(this->passenger.getCode(1) == 'R')
+			destIdx = 0;
+		else if(this->passenger.getCode(1) == 'G')
+			destIdx = 1;
+		else if(this->passenger.getCode(1) == 'B')
+			destIdx = 2;
+		else if(this->passenger.getCode(1) == 'Y')
+			destIdx = 3;
+		state = this->encode(cabI, cabJ, passengerIdx, destIdx);
+		epochs = 0;
+		penalties = 0;
+		reward = 0;
+		done = false;
+		while(!done){
+			if(float(std::rand())/float((std::RAND_MAX)) < EPSILON)
+				actionCode = std::rand()%6; //exploration
+			else
+				actionCode = this->getActionForMaxQValue(state); //exploitation
+			this->env.step(actionCode, nextState, reward, done);
+			oldQ = this->qTable[E(state,actionCode)];
+			nextMaxQ = this->getMaxQForState(state);
+			newQ = ((1-ALPHA) * oldQ)+\
+			       (ALPHA * (reward + GAMMA * nextMaxQ));
+			this->qTable[E(state, actionCode)] = newQ;
+			if (reward == -10)
+				penalties += 1;
+			state = nextState;
+			epochs += 1;
+		}
+
+	}
+}
+
+int Env::getActionForMaxQValue(int& state){
+/* Looks in the QTable for a particular state and find the action with the max q-value*/
+}
+
+int Env::step(int actionCode, int& nextState, int& reward, bool& done){
+}
+
+float Env::getMaxQForState(int state){
 }

@@ -147,3 +147,7 @@ int Passenger::getPos(int i,int j){
 			return this->dropOffPos.y;
 	}
 }
+
+bool Passenger::getPassengerStatus(){
+	return this->isPassengerInCab;
+}

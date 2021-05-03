@@ -12,9 +12,16 @@ class Env{
 		int numCabXStates;
 		int numCabYStates;
 		RewardTable rewardTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
+		float qTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
 
 		void setupEncodeArr();
 		void initializeRewardTable();
+		void resetQTable();
+		void updateQTable();
+		int getActionForMaxQValue(int& state);
+
+		void learn(); // learning algorithm
+		void reset(); // reset the whole world
 
 		int getNextState(int state, int action);
 		int getReward(int state, int action);

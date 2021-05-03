@@ -18,4 +18,4 @@
 	* in getNextState function, we decode the passed code and check for walls (for action codes 0 to 3). If wall collision, then the nextState is current state and deduct -1-1 to dScore. for every other scenario, get the corresponding state to nextState and put -1 to dScore. for action code 4 and 5, pickup at wrong location leads to -10 dScore. correct drop off leads to +20 dScore and set isDone to true
 	* also make a variable maxTime and currTime and update accordingly.
 
-Problem: * when to change isPassengerInCab bool? inside getNextState??
+Problem: * when to change isPassengerInCab bool? inside getNextState?? ans) you dont' need to change isPassengerInCab for getNextState. Just check if the passenger is in the cab or not by using PassengerIdx to be 4 or not 4. The states will differ only by this change of PassengerIdx in the scenario of the passenger entering or exiting the cab.

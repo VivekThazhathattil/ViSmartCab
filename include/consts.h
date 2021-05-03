@@ -15,4 +15,10 @@
 #define NUM_PASSENGER_STATES 5
 #define NUM_DEST_STATES 4
 
+#define NUM_ITERATIONS 100000
+
+#define ALPHA 0.1
+#define GAMMA 0.6
+#define EPSILON 0.1
+
 // wall location hardcoded into src/wall.cpp

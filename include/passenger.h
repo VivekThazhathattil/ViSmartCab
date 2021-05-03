@@ -20,6 +20,7 @@ class Passenger{
 		void setSpecificSpawnAndDropPosition(int s, int d);
 		char getCode(int flag); // flag = 0 -> pickup, flag = 1 -> dropoff
 		int getPos(int i, int j); // i : 0=pickUpPos 1=dropOffPos, j: 0=x 1=y
+		bool getPassengerStatus(); // is inside the cab or not
 };
 
 int setCoords(int key, char coord);
