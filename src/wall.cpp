@@ -32,3 +32,43 @@ Wall::~Wall() {}
 WallPosition Wall::getWallPosition(int num){
 	return this->wallPos[num];
 }
+bool Wall::checkWallCollision(int& cabI, int&cabJ, int& action){
+	/* Left vertical wall */
+
+	/* Right vertical wall */
+	
+	/* Top horizontal wall */
+
+	/* Bottom horizontal wall */
+
+	/* Other walls */
+	WallPosition wallPos;
+	for (int i = 0; i < NUM_WALLS; i++){
+		wallPos = this->getWallPosition(num);
+		if (this->getWallType(wallPos) == 'H'){ // horizontal wall
+			
+		}
+		else if (this->getWallType(wallPos == 'V')){ // vertical wall
+
+		}
+	}
+
+	return false;
+}
+
+char Wall:getWallType(WallPosition& w){
+	if(w.y0 == w.y1)
+		return 'V';
+	return 'H';
+}	
+
+
+
+
+
+
+
+
+
+
+

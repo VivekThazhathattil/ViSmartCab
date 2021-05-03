@@ -27,7 +27,7 @@ void Render::runSimulation(){
 	createRGBYMarkings(textR, textG, textB, textY, font);
 	updateFigure(cab, wall, textR, textG, textB, textY);
 
-	printf("%d",this->env.encode(3,1,2,0));
+	printf("%d\n",this->env.encodeNEditState(3,1,2,0));
 	updateFigure(cab, wall, textR, textG, textB, textY);
 
 	while(this->window.isOpen()){

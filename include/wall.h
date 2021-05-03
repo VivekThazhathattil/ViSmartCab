@@ -4,10 +4,10 @@
 class Wall{
 	private:
 		WallPosition wallPos[NUM_WALLS];
+		WallPosition getWallPosition(int num);
 	public:
 		Wall();
 		~Wall();
 
-		void checkWallCollision();
-		WallPosition getWallPosition(int num);
+		bool checkWallCollision(int& cabI, int&cabJ, int& action); // should check for boundary cases as well
 };

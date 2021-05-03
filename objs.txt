@@ -8,3 +8,12 @@
 8. passenger object: it will have a member function which will toggle the isPassengerInside bool if he enters/exits the cab. Its variables include the pickup and drop-off locations.
 9. wall object will have a special struct variable with 4 values (x0,y0,x1,y1) which will indicate the two adjacent cells that share the wall.
 10. render object
+
+03/05:
+1. reward table (variable name: rewardTable) : basically a matrix of size (num_states x num_actions) = (500 x 6) {Implement the matrix as 1d array with (state_i + num_states * action_j) index for (i,j) corresponding to the matrix. Its data type is a struct variable type, lets call it baseInfo. baseInfo will have three four variables: float probability, int nextstate, int reward, bool done.
+	- also requires a member function inside env class to initialize the baseInfo of each state. name: initializeBaseInfo()
+	- initialize all probability variables to 1. Next three variables are tricky.
+	*	we need decode to accompany encode. When we pass a value b/w 0 to 500, decode should initialize the variables passed by reference with the values of cab position and passenger source & destinations. 
+	*	to get the next state, lets call a function getNextState(328,3,dScore,isDone)	 (2nd argument = action :: 0:south 1:north 2:east 3:west 4:pickup 5:dropoff), dScore = differential score, isDone = whether cab successfully transported passenger from source to dest. Pass dScore and isDone by reference.
+	* in getNextState function, we decode the passed code and check for walls (for action codes 0 to 3). If wall collision, then the nextState is current state and deduct -1-1 to dScore. for every other scenario, get the corresponding state to nextState and put -1 to dScore. for action code 4 and 5, pickup at wrong location leads to -10 dScore. correct drop off leads to +20 dScore and set isDone to true
+	* also make a variable maxTime and currTime and update accordingly.
