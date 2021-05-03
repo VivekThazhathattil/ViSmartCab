@@ -20,6 +20,7 @@ Env::Env() {
 	this->numCabYStates = NUM_GRIDS_Y;
 
 	this->setupEncodeArr();
+	this->initializeRewardTable();
 }
 Env::~Env() {
 }
@@ -76,50 +77,96 @@ int Env::getNextState(int state, int action){
 	decode(code, cabI, cabJ, passengerIdx, destIdx);
 	switch(action){
 		case 0: // south
-			if(checkWallCollision(cabI, cabJ, action)
+			if(this->wall.checkWallCollision(cabI, cabJ, action))
+				code = state;
+			else
+				code = this->encode(cabI, cabJ+1, passengerIdx, destIdx);	
 			break;
 
 		case 1: // north
+			if(this->wall.checkWallCollision(cabI, cabJ, action))
+				code = state;
+			else
+				code = this->encode(cabI, cabJ-1, passengerIdx, destIdx);	
 			break;
 
 		case 2: // east
+			if(this->wall.checkWallCollision(cabI, cabJ, action))
+				code = state;
+			else
+				code = this->encode(cabI+1, cabJ, passengerIdx, destIdx);	
 			break;
 
 		case 3: // west
+			if(this->wall.checkWallCollision(cabI, cabJ, action))
+				code = state;
+			else
+				code = this->encode(cabI-1, cabJ, passengerIdx, destIdx);	
 			break;
 
 		case 4: // pickup
-
+			if (passengerIdx != 4 &&\
+					this->passenger.getPos(0,0) == cabI &&\
+					this->passenger.getPos(0,1) == cabJ\
+			   ){
+				passengerIdx = 4;
+				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
+			}
+			break;
 		case 5: // dropoff
+			if (passengerIdx == 4 &&\
+					this->passenger.getPos(1,0) == cabI &&\
+					this->passenger.getPos(1,1) == cabJ\
+			   ){
+				char a = this->passenger.getCode(0);
+				if (a == 'R') passengerIdx = 0;
+				else if (a == 'G') passengerIdx = 1;
+				else if (a == 'B') passengerIdx = 2;
+				else if (a == 'Y') passengerIdx = 3;
+				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
+
+			}
 			break;
 	}
 	return code;	
 }
 
 int Env::getReward(int state, int action){
-	int val = 0;
+	int cabI, cabJ, passengerIdx, destIdx;
+	decode(state, cabI, cabJ, passengerIdx, destIdx);
+	int reward = 0;
 	switch(action){
 		case 0: // south
-			break;
 
 		case 1: // north
-			break;
 
 		case 2: // east
-			break;
 
 		case 3: // west
+			reward = -1; // all movements attribute to -1 reward
 			break;
 
 		case 4: // pickup
+			reward = -10;
+			break;
 
 		case 5: // dropoff
+			if(\
+			this->passenger.getPos(1,0) == cabI &&\
+			this->passenger.getPos(1,1) == cabJ &&\
+			passengerIdx == 4\
+			)
+				reward = 20;
+			else
+				reward = -10;
 			break;
 	}
-	return val;
+	return reward;
 }
 
 bool Env::isDone(int state, int action){
+	int cabI, cabJ, passengerIdx, destIdx;
+	decode(state, cabI, cabJ, passengerIdx, destIdx);
 	bool flag = false;
 	switch(action){
 		case 0: // south
@@ -134,6 +181,12 @@ bool Env::isDone(int state, int action){
 			break;
 
 		case 5: // dropoff
+			if(\
+			this->passenger.getPos(1,0) == cabI &&\
+			this->passenger.getPos(1,1) == cabJ &&\
+			passengerIdx == 4\
+			)
+				flag = true;
 			break;
 	}
 	return flag;

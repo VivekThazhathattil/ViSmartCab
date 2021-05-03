@@ -2,6 +2,7 @@
 
 Wall::Wall() {
 	// manually set all the walls : Assuming NUM_WALLS = 5
+	// set the coords in top-down order for horizontal walls and left-right order for vertical walls
 	 this->wallPos[0].x0 = 0; 
 	 this->wallPos[0].y0 = 3; 
 	 this->wallPos[0].x1 = 1; 
@@ -33,30 +34,48 @@ WallPosition Wall::getWallPosition(int num){
 	return this->wallPos[num];
 }
 bool Wall::checkWallCollision(int& cabI, int&cabJ, int& action){
-	/* Left vertical wall */
-
-	/* Right vertical wall */
-	
-	/* Top horizontal wall */
-
-	/* Bottom horizontal wall */
+	bool flag = false;
+	/* The four boundary walls of the parking lot */
+	if (\
+		(cabI == 0 && action == 3) ||\
+		(cabI == NUM_GRIDS_X - 1 && action == 2) ||\
+		(cabJ == 0 && action == 1) ||\
+		(cabJ == NUM_GRIDS_Y -1 && action == 0)
+	)
+		flag = true;
 
 	/* Other walls */
 	WallPosition wallPos;
 	for (int i = 0; i < NUM_WALLS; i++){
-		wallPos = this->getWallPosition(num);
-		if (this->getWallType(wallPos) == 'H'){ // horizontal wall
-			
+		wallPos = this->getWallPosition(i);
+		if (wallPos.x0 == cabI && wallPos.y0 == cabJ){
+			if (this->getWallType(wallPos) == 'H'){ // horizontal wall
+				if (action == 0)
+					flag = true;
+			}
+			else if (this->getWallType(wallPos) == 'V'){ // vertical wall
+				if ( action == 3)
+					flag == true;
+	
+			}
 		}
-		else if (this->getWallType(wallPos == 'V')){ // vertical wall
 
+		else if (wallPos.x1 == cabI && wallPos.y1 == cabJ){
+			if (this->getWallType(wallPos) == 'H'){ // horizontal wall
+				if (action == 1)
+					flag = true;
+			}
+			else if (this->getWallType(wallPos) == 'V'){ // vertical wall
+				if (action == 2)
+					flag == true;
+			}
 		}
 	}
 
-	return false;
+	return flag;
 }
 
-char Wall:getWallType(WallPosition& w){
+char Wall::getWallType(WallPosition& w){
 	if(w.y0 == w.y1)
 		return 'V';
 	return 'H';

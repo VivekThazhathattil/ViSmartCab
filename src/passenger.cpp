@@ -132,3 +132,18 @@ char Passenger::getCode(int flag){
 	}
 	return this->dropOffCode;
 }
+
+int Passenger::getPos(int i,int j){
+	if (i == 0){
+		if (j == 0)
+			return this->pickUpPos.x;
+		else
+			return this->pickUpPos.y;
+	}
+	else{
+		if (j == 0)
+			return this->dropOffPos.x;
+		else
+			return this->dropOffPos.y;
+	}
+}

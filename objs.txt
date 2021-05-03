@@ -17,3 +17,5 @@
 	*	to get the next state, lets call a function getNextState(328,3,dScore,isDone)	 (2nd argument = action :: 0:south 1:north 2:east 3:west 4:pickup 5:dropoff), dScore = differential score, isDone = whether cab successfully transported passenger from source to dest. Pass dScore and isDone by reference.
 	* in getNextState function, we decode the passed code and check for walls (for action codes 0 to 3). If wall collision, then the nextState is current state and deduct -1-1 to dScore. for every other scenario, get the corresponding state to nextState and put -1 to dScore. for action code 4 and 5, pickup at wrong location leads to -10 dScore. correct drop off leads to +20 dScore and set isDone to true
 	* also make a variable maxTime and currTime and update accordingly.
+
+Problem: * when to change isPassengerInCab bool? inside getNextState??
