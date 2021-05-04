@@ -170,7 +170,11 @@ int Env::getReward(int state, int action){
 
 		case 4: // pickup
 			/* correct pickup deserves positive reinforcement */
-			if (this->passenger.getPos(0,0) == cabI && this->passenger.getPos(0,1) == cabJ)
+			if (this->passenger.getPos(0,0) == cabI &&\
+				       	this->passenger.getPos(0,1) == cabJ &&\
+					passengerIdx != 4\
+					// if passenger not inside the cab, then pickup is good!
+			)
 				reward = 10;
 			else
 				reward = -5; /* wrong pickup needs to be punished */

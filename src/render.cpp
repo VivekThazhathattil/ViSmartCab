@@ -6,7 +6,17 @@
 #define IX(x, y) ((x) + (y) * (NUM_GRIDS_X))
 #define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
 
-Render::Render() : window(sf::RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "SMARTCAB in C++!", sf::Style::Close)) {}
+Render::Render() : window(sf::RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "SMARTCAB in C++!", sf::Style::Close)) {
+	if(!this->parkingLotTexture.loadFromFile("res/road.png")){
+		printf("error loading parkingLotTexture from file\n");
+	}
+	if(!this->cabTexture.loadFromFile("res/cab.png")){
+		printf("error loading parkingLotTexture from file\n");
+	}
+	if(!this->wallTexture.loadFromFile("res/wall.png")){
+		printf("error loading parkingLotTexture from file\n");
+	}
+}
 Render::~Render() {}
 
 void Render::runSimulation(){
@@ -14,6 +24,7 @@ void Render::runSimulation(){
 
 	std::vector<sf::RectangleShape> parkingLot;
 	sf::RectangleShape cab;
+	cab.setTexture(&this->cabTexture,true);
 	std::vector<sf::RectangleShape> wall;
 
 	sf::Font font; // for RGBY markings
@@ -77,9 +88,10 @@ void Render::createParkingLot(std::vector<sf::RectangleShape>& pl){
 						offset.y + j*GRID_SIZE\
 						));
 			rect.setSize(sf::Vector2f(GRID_SIZE,GRID_SIZE));
-			rect.setFillColor(sf::Color::Black);
-			rect.setOutlineThickness(1);
-			rect.setOutlineColor(sf::Color::White);
+//			rect.setFillColor(sf::Color::Black);
+			rect.setOutlineThickness(2);
+			rect.setOutlineColor(sf::Color::Black);
+			rect.setTexture(&this->parkingLotTexture);
 			pl.push_back(rect);
 		}
 	}
@@ -136,11 +148,14 @@ void Render::createCab(sf::RectangleShape& cab){
 				));
 	cab.setSize(sf::Vector2f(CAB_X,CAB_Y));
 	if(this->env.passenger.getPassengerStatus())
-		cab.setFillColor(sf::Color::Green);
+		cab.setFillColor(sf::Color(0,255,0,255));
 	else
-		cab.setFillColor(sf::Color::Yellow);
-	cab.setOutlineThickness(2);
-	cab.setOutlineColor(sf::Color::White);
+		cab.setFillColor(sf::Color::White);
+	cab.setScale(2.5,1.0);
+//	else
+//		cab.setFillColor(sf::Color::Yellow);
+//	cab.setOutlineThickness(2);
+//	cab.setOutlineColor(sf::Color::White);
 }
 
 void Render::createWall(std::vector<sf::RectangleShape>& wall){
@@ -157,9 +172,10 @@ void Render::createWall(std::vector<sf::RectangleShape>& wall){
 						offset.y + GRID_SIZE*wp.y1\
 						));
 			rect.setSize(sf::Vector2f(GRID_SIZE, WALL_Y));
-			rect.setFillColor(sf::Color::Blue);
-			rect.setOutlineThickness(1);
+			rect.setFillColor(sf::Color::White);
+			rect.setOutlineThickness(0);
 			rect.setOutlineColor(sf::Color::White);
+			rect.setTexture(&this->wallTexture);
 			wall.push_back(rect);
 		}
 		else if (wp.y0 == wp.y1) // vertical wall
@@ -170,9 +186,10 @@ void Render::createWall(std::vector<sf::RectangleShape>& wall){
 						offset.y + GRID_SIZE*wp.y1\
 						));
 			rect.setSize(sf::Vector2f(WALL_X, GRID_SIZE));
-			rect.setFillColor(sf::Color::Blue);
+			rect.setFillColor(sf::Color::White);
 			rect.setOutlineThickness(1);
-			rect.setOutlineColor(sf::Color::White);
+			rect.setOutlineColor(sf::Color::Black);
+			rect.setTexture(&this->wallTexture);
 			wall.push_back(rect);
 		}
 	}
@@ -344,11 +361,11 @@ void Render::learn(\
 //			printf("%d\n",actionCode);
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
-			if(epochs <= 20){
-			//	usleep(0.5 * 1000000);
+			if(epochs <= 10){
+				usleep(0.5 * 1000000);
 			}
-			if(epochs > 4000) // should verify if its okay to do so!
-				break;
+//			if(epochs > 4000) // should verify if its okay to do so!
+//				break;
 		}
 
 			this->env.iterator = iter;

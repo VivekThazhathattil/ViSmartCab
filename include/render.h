@@ -7,6 +7,9 @@ class Render{
 		Env env;
     		sf::RenderWindow window;
 	public:
+		sf::Texture parkingLotTexture;
+		sf::Texture cabTexture;
+		sf::Texture wallTexture;
 		Render();
 		~Render();
 
