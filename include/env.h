@@ -24,8 +24,9 @@ class Env{
 		bool isDone(int state, int action);
 
 	public:
-		float qTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
-
+		double qTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
+		
+		int iterator;
 		Wall wall;
 		Cab cab;
 		Passenger passenger;
@@ -46,6 +47,8 @@ class Env{
 		void updateQTable();
 		int getActionForMaxQValue(int& state);
 		void step(int actionCode, int state, int& nextState, int& reward, bool& done);
-		float getMaxQForState(int& state);
+		double getMaxQForState(int& state);
 		std::string actionCodeToString(int& code);
+		void saveQTableToFile();
+		void getQTableFromFile();
 };

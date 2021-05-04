@@ -19,6 +19,6 @@
 
 #define ALPHA 0.1
 #define GAMMA 0.6
-#define EPSILON 0.4
+#define EPSILON 0.1
 
 // wall location hardcoded into src/wall.cpp

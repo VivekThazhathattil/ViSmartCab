@@ -268,10 +268,10 @@ void Render::learn(\
 	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
 	float oldQ, newQ, nextMaxQ;
 	int actionCode;
-	int iter;
+	int iter = this->env.iterator;
 	std::string mode;
 
-	for (iter = 0; iter < NUM_ITERATIONS && this->window.isOpen(); iter++){
+	for (; iter < NUM_ITERATIONS && this->window.isOpen(); iter++){
 		sf::Event e;
                 while(window.pollEvent(e))
                 {
@@ -344,6 +344,8 @@ void Render::learn(\
 //			printf("%d\n",actionCode);
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
+			this->env.iterator = iter;
+			this->env.saveQTableToFile();
 			if(epochs <= 20)
 				usleep(0.5 * 1000000);
 		}

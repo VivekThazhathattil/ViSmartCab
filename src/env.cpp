@@ -1,5 +1,8 @@
 #include "../include/env.h"
 #include <time.h>
+#include <fstream>
+#include <iostream>
+#include <filesystem>
 
 //#include <cstdlib>
 //#include <cstdio>
@@ -25,6 +28,14 @@ Env::Env() {
 
 	this->setupEncodeArr();
 	this->initializeRewardTable();
+
+	if(std::filesystem::exists("./saveData/qTable.dat")){
+		this->getQTableFromFile();		
+	}
+	else{
+		this->resetQTable();
+		this->iterator = 0;
+	}
 }
 Env::~Env() {
 }
@@ -281,7 +292,7 @@ void Env::step(int actionCode, int state, int& nextState, int& reward, bool& don
 	done = this->isDone(state, actionCode);
 }
 
-float Env::getMaxQForState(int& state){
+double Env::getMaxQForState(int& state){
 	float maxVal = - 10000.0;
 	int jCandidate = 0;
 	for(int j = 0; j < NUM_ACTIONS; j++){
@@ -322,4 +333,39 @@ std::string Env::actionCodeToString(int& code){
 			break;
 	}
 	return text;
+}
+
+void Env::saveQTableToFile(){
+	std::ofstream qFile;
+	qFile.open("./saveData/qTable.dat", std::fstream::trunc);
+	if(!qFile.is_open()){
+	        std::cerr << "There was a problem opening the input file!\n";
+		exit(1);
+	}
+	for (int i = 0; i <= NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS; i++){
+		if(i==0)
+			qFile << this->iterator << std::endl;	
+		else
+			qFile << this->qTable[i-1] << std::endl;
+	}
+	qFile.close();
+}
+
+void Env::getQTableFromFile(){
+	std::ifstream qFile;
+	qFile.open("./saveData/qTable.dat", std::fstream::in);
+	if (!qFile.is_open()) {
+	        std::cerr << "There was a problem opening the input file!\n";
+	        exit(1);
+    	}
+	double num = 0.0;
+	int i = 0;
+	while(qFile >> num && i <= NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS)
+	{
+		if (i == 0)
+			this->iterator = num;
+		else
+			this->qTable[i-1] = num;
+		i++;
+	}
 }
