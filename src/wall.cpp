@@ -1,5 +1,11 @@
 #include "../include/wall.h"
 
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <stdio.h>
+#include <iostream>
+
 Wall::Wall() {
 	// manually set all the walls : Assuming NUM_WALLS = 5
 	// set the coords in top-down order for horizontal walls and left-right order for vertical walls
@@ -41,8 +47,9 @@ bool Wall::checkWallCollision(int& cabI, int&cabJ, int& action){
 		(cabI == NUM_GRIDS_X - 1 && action == 2) ||\
 		(cabJ == 0 && action == 1) ||\
 		(cabJ == NUM_GRIDS_Y -1 && action == 0)
-	)
+	){
 		flag = true;
+	}
 
 	/* Other walls */
 	WallPosition wallPos;
@@ -54,8 +61,10 @@ bool Wall::checkWallCollision(int& cabI, int&cabJ, int& action){
 					flag = true;
 			}
 			else if (this->getWallType(wallPos) == 'V'){ // vertical wall
-				if ( action == 3)
-					flag == true;
+				if ( action == 2){
+					std::cout<<"wall collision ("<< std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ") "<< std::to_string(int(action))<<std::endl;
+					flag = true;
+				}
 	
 			}
 		}
@@ -66,8 +75,10 @@ bool Wall::checkWallCollision(int& cabI, int&cabJ, int& action){
 					flag = true;
 			}
 			else if (this->getWallType(wallPos) == 'V'){ // vertical wall
-				if (action == 2)
-					flag == true;
+				if (action == 3){
+					std::cout<<"wall collision ("<< std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ") "<< std::to_string(int(action))<<std::endl;
+					flag = true;
+				}
 			}
 		}
 	}

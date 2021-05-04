@@ -1,6 +1,7 @@
 #include "../include/env.h"
 #include <time.h>
 #include <cstdlib>
+//#include <cstdio>
 #define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
 
 Env::Env() {
@@ -84,30 +85,22 @@ int Env::getNextState(int state, int action){
 	decode(code, cabI, cabJ, passengerIdx, destIdx);
 	switch(action){
 		case 0: // south
-			if(this->wall.checkWallCollision(cabI, cabJ, action))
-				code = state;
-			else
+			if(!this->wall.checkWallCollision(cabI, cabJ, action))
 				code = this->encode(cabI, cabJ+1, passengerIdx, destIdx);	
 			break;
 
 		case 1: // north
-			if(this->wall.checkWallCollision(cabI, cabJ, action))
-				code = state;
-			else
+			if(!this->wall.checkWallCollision(cabI, cabJ, action))
 				code = this->encode(cabI, cabJ-1, passengerIdx, destIdx);	
 			break;
 
 		case 2: // east
-			if(this->wall.checkWallCollision(cabI, cabJ, action))
-				code = state;
-			else
+			if(!this->wall.checkWallCollision(cabI, cabJ, action))
 				code = this->encode(cabI+1, cabJ, passengerIdx, destIdx);	
 			break;
 
 		case 3: // west
-			if(this->wall.checkWallCollision(cabI, cabJ, action))
-				code = state;
-			else
+			if(!this->wall.checkWallCollision(cabI, cabJ, action))
 				code = this->encode(cabI-1, cabJ, passengerIdx, destIdx);	
 			break;
 
@@ -116,7 +109,7 @@ int Env::getNextState(int state, int action){
 					this->passenger.getPos(0,0) == cabI &&\
 					this->passenger.getPos(0,1) == cabJ\
 			   ){
-				passengerIdx = 4;
+//				printf("passenger picked up\n"); passengerIdx = 4;
 				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
 			}
 			break;
@@ -260,14 +253,13 @@ int Env::getActionForMaxQValue(int& state){
 /* Looks in the QTable for a particular state and find the action with the max q-value*/
 	float maxVal = - 10000.0;
 	int jCandidate = 0;
-	int j;
-	for(j = 0; j < NUM_ACTIONS; j++){
-		if(this->qTable[E(state,j)] > maxVal){
+	for(int j = 0; j < NUM_ACTIONS; j++){
+		if(this->qTable[E(state,j)] >= maxVal){
 			maxVal = this->qTable[E(state,j)];
 			jCandidate = j;
 		}
 	}
-	return j;
+	return jCandidate;
 }
 
 void Env::step(int actionCode, int state, int& nextState, int& reward, bool& done){
@@ -298,4 +290,29 @@ void Env::reset(){
 /* reset cab position, passenger position */
 	this->cab.setRandomSpawnPosition();
 	this->passenger.setRandomSpawnAndDropPosition();
+}
+
+std::string Env::actionCodeToString(int& code){
+	std::string text;
+	switch(code){
+		case 0:
+			text = "south";
+			break;
+		case 1:
+			text = "north";
+			break;
+		case 2:
+			text = "east";
+			break;
+		case 3:
+			text = "west";
+			break;
+		case 4:
+			text = "pickup";
+			break;
+		case 5:
+			text = "dropoff";
+			break;
+	}
+	return text;
 }

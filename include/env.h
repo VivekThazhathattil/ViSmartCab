@@ -3,6 +3,7 @@
 #include "passenger.h"
 #include "consts.h"
 #include "rewardTable.h"
+#include <string>
 
 class Env{
 	private:
@@ -11,12 +12,12 @@ class Env{
 		int numDestStates;
 		int numCabXStates;
 		int numCabYStates;
-		RewardTable rewardTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
+		RewardTable rewardTable[NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
 
 		void setupEncodeArr();
 		void initializeRewardTable();
 
-		void learn(); // learning algorithm (headless with no gui)
+		void learn(); // learning algorithm (headless)
 
 		int getNextState(int state, int action);
 		int getReward(int state, int action);
@@ -46,4 +47,5 @@ class Env{
 		int getActionForMaxQValue(int& state);
 		void step(int actionCode, int state, int& nextState, int& reward, bool& done);
 		float getMaxQForState(int& state);
+		std::string actionCodeToString(int& code);
 };

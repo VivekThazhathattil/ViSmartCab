@@ -1,6 +1,7 @@
 #include "../include/render.h"
 #include "../include/consts.h"
 #include "../include/position.h"
+#include <unistd.h>
 
 #define IX(x, y) ((x) + (y) * (NUM_GRIDS_X))
 #define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
@@ -84,34 +85,22 @@ void Render::createParkingLot(std::vector<sf::RectangleShape>& pl){
 	}
 }
 
+void Render::setTextProperties(sf::Text& text, sf::Font& font, int fontSize, std::string strg){
+	text.setFont(font);
+	text.setCharacterSize(fontSize);
+	text.setString(strg);
+	text.setFillColor(sf::Color::White);
+	if (strg.size() < 3)
+        	text.setStyle(sf::Text::Bold);
+}
+
 void Render::createRGBYMarkings(sf::Text& R, sf::Text& G ,sf::Text& B, sf::Text& Y, sf::Font& font){
 	sf::Vector2f offset = getOffset();
 
-	R.setFont(font);	
-	G.setFont(font);	
-	B.setFont(font);	
-	Y.setFont(font);	
-
-	R.setString("R");
-	G.setString("G");
-	B.setString("B");
-	Y.setString("Y");
-
-	R.setCharacterSize(28);
-	G.setCharacterSize(28);
-	B.setCharacterSize(28);
-	Y.setCharacterSize(28);
-
-	R.setFillColor(sf::Color::White);
-	G.setFillColor(sf::Color::White);
-	B.setFillColor(sf::Color::White);
-	Y.setFillColor(sf::Color::White);
-
-        R.setStyle(sf::Text::Bold);
-        G.setStyle(sf::Text::Bold);
-        B.setStyle(sf::Text::Bold);
-        Y.setStyle(sf::Text::Bold);
-
+	this->setTextProperties(R, font, 28, "R");
+	this->setTextProperties(G, font, 28, "G");
+	this->setTextProperties(B, font, 28, "B");
+	this->setTextProperties(Y, font, 28, "Y");
 
 	R.setOrigin(\
 			R.getGlobalBounds().width/2,\
@@ -236,7 +225,8 @@ void Render::drawNDisplay(\
   sf::Text& R,\
   sf::Text& G,\
   sf::Text& B,\
-  sf::Text& Y\
+  sf::Text& Y,\
+  sf::Text& info\
 ){
 
 	for (int i = 0; i < NUM_GRIDS_X; i++){
@@ -249,6 +239,7 @@ void Render::drawNDisplay(\
 	this->window.draw(G);
 	this->window.draw(B);
 	this->window.draw(Y);
+	this->window.draw(info);
 
 	this->window.draw(cab);
 	for (int i = 0; i < wall.size(); i++){
@@ -266,21 +257,26 @@ void Render::learn(\
 		sf::Text& textB,\
 		sf::Text& textY\
 ){
+	sf::Text info;
+	sf::Font font; // for RGBY markings
+	if(!font.loadFromFile("res/arial.ttf")){
+		printf("Error in loading font from file\n");
+	}
 	std::srand(time(0));
 	int epochs, penalties, reward;
 	bool done;
 	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
 	float oldQ, newQ, nextMaxQ;
 	int actionCode;
-	for (int i = 0; i < NUM_ITERATIONS && this->window.isOpen(); i++){
+	int iter;
+
+	for (iter = 0; iter < NUM_ITERATIONS && this->window.isOpen(); iter++){
 		sf::Event e;
                 while(window.pollEvent(e))
                 {
                         if (e.type == sf::Event::Closed)
                                 this->window.close();
                 }
-                this->window.clear();
-
 		this->env.reset(); //reset our sample space
 		updateFigure(cab, wall, textR, textG, textB, textY);
 		cabI = this->env.cab.getSpawnPosition('x');
@@ -311,13 +307,13 @@ void Render::learn(\
 		reward = 0;
 		done = false;
 		while(!done){
+                	this->window.clear();
 			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
 			if(r < EPSILON)
 				actionCode = std::rand()%NUM_ACTIONS; //exploration
 			else
 				actionCode = this->env.getActionForMaxQValue(state); //exploitation
 			this->env.step(actionCode, state, nextState, reward, done);
-			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			oldQ = this->env.qTable[E(state,actionCode)];
 			nextMaxQ = this->env.getMaxQForState(state);
 			newQ = ((1-ALPHA) * oldQ)+\
@@ -328,7 +324,17 @@ void Render::learn(\
 			state = nextState;
 			epochs += 1;
 
-			drawNDisplay(pl, cab, wall, textR, textG, textB, textY);
+			this->env.decode(state, cabI, cabJ, passengerIdx, destIdx);
+			std::string inf = "Episode no.      : " + std::to_string((int)iter) + "\n"+\
+					  "Action                : " + this->env.actionCodeToString(actionCode) + "\n"+\
+					  "State                 : " + std::to_string((int)state) + "\n" +\
+					  "Cab Location    : " + "(" + std::to_string((int)cabI) + "," + std::to_string((int)cabJ) + ")";
+			this->setTextProperties(info, font, 16, inf);
+			
+//			printf("%d\n",actionCode);
+			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
+			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
+			usleep(0.2 * 1000000);
 		}
 
 	}

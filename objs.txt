@@ -22,5 +22,5 @@ Problem: * when to change isPassengerInCab bool? inside getNextState?? ans) you 
 
 find a way to display the training with perceptible movement of the cab.
 
-* need more data on screen: Title, iteration no., current direction
+* need more data on screen: Title, iteration no., current action, state no.
 * wall collision not properly detected : fix issue
