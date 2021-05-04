@@ -25,6 +25,11 @@ void Passenger::setRandomSpawnAndDropPosition(){
 	this->dropOffPos.x = getPosFromLocCode(loc2, 'x');
 	this->dropOffPos.y = getPosFromLocCode(loc2, 'y');
 
+//	printf("loc1 = %d\n",loc1);
+//	printf("loc2 = %d\n",loc2);
+//	printf("pickUpPos = (%d,%d)\n",this->pickUpPos.x,this->pickUpPos.y);
+//	printf("dropOffPos = (%d,%d)\n",this->dropOffPos.x,this->dropOffPos.y);
+
 	this->currPos.x = this->pickUpPos.x;
 	this->currPos.y = this->pickUpPos.y;
 }
@@ -35,15 +40,19 @@ int Passenger::getPosFromLocCode(int& loc, char a){
 		case 0: //R
 			if ( a == 'x') pos = 0;
 			else pos = 0;
+			break;
 		case 1: //G
 			if ( a == 'x') pos = 4;
 			else pos = 0;
+			break;
 		case 2: //B
 			if ( a == 'x') pos = 3;
 			else pos = 4;
+			break;
 		case 3: //Y
 			if ( a == 'x') pos = 0;
 			else pos = 4;
+			break;
 
 	}
 	return pos;

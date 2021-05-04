@@ -1,8 +1,8 @@
 #include "../include/env.h"
 #include <time.h>
 
-#include <cstdlib>
-#include <cstdio>
+//#include <cstdlib>
+//#include <cstdio>
 #define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
 
 Env::Env() {
@@ -108,12 +108,11 @@ int Env::getNextState(int state, int action){
 
 		case 4: // pickup
 			if ( this->passenger.getPos(0,0) == cabI && this->passenger.getPos(0,1) == cabJ)
-				printf("pickup attempt at (%d,%d)\n",cabI,cabJ);
 			if (passengerIdx != 4 &&\
 					this->passenger.getPos(0,0) == cabI &&\
 					this->passenger.getPos(0,1) == cabJ\
 			   ){
-				printf("passenger picked up\n");
+//				printf("passenger picked up at (%d,%d)\n",cabI,cabJ);
 				passengerIdx = 4;
 				this->passenger.setPassengerStatus(true);
 				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
@@ -124,7 +123,7 @@ int Env::getNextState(int state, int action){
 					this->passenger.getPos(1,0) == cabI &&\
 					this->passenger.getPos(1,1) == cabJ\
 			   ){
-				printf("passenger dropped off\n");
+//				printf("passenger dropped off at (%d,%d)\n",cabI,cabJ);
 				char a = this->passenger.getCode(0);
 				if (a == 'R') passengerIdx = 0;
 				else if (a == 'G') passengerIdx = 1;

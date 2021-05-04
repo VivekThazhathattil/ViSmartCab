@@ -263,12 +263,13 @@ void Render::learn(\
 		printf("Error in loading font from file\n");
 	}
 	std::srand(time(0));
-	int epochs, penalties, reward;
+	int epochs, penalties, reward, score;
 	bool done;
 	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
 	float oldQ, newQ, nextMaxQ;
 	int actionCode;
 	int iter;
+	std::string mode;
 
 	for (iter = 0; iter < NUM_ITERATIONS && this->window.isOpen(); iter++){
 		sf::Event e;
@@ -306,13 +307,18 @@ void Render::learn(\
 		penalties = 0;
 		reward = 0;
 		done = false;
+		score = 0;
 		while(!done){
                 	this->window.clear();
 			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-			if(r < EPSILON)
+			if(r < EPSILON){
+				mode = "Explore";
 				actionCode = std::rand()%NUM_ACTIONS; //exploration
-			else
+			}
+			else{
+				mode = "Exploit";
 				actionCode = this->env.getActionForMaxQValue(state); //exploitation
+			}
 			this->env.step(actionCode, state, nextState, reward, done);
 			oldQ = this->env.qTable[E(state,actionCode)];
 			nextMaxQ = this->env.getMaxQForState(state);
@@ -321,20 +327,25 @@ void Render::learn(\
 			this->env.qTable[E(state, actionCode)] = newQ;
 			if (reward == -10)
 				penalties += 1;
+			score += reward;
 			state = nextState;
 			epochs += 1;
 
 			this->env.decode(state, cabI, cabJ, passengerIdx, destIdx);
-			std::string inf = "Episode no.      : " + std::to_string((int)iter) + "\n"+\
+			std::string inf = "Episode no.      : " + std::to_string((int)(iter+1)) + "\n"+\
 					  "Action                : " + this->env.actionCodeToString(actionCode) + "\n"+\
 					  "State                 : " + std::to_string((int)state) + "\n" +\
-					  "Cab Location    : " + "(" + std::to_string((int)cabI) + "," + std::to_string((int)cabJ) + ")";
+					  "Cab Location    : " + "(" + std::to_string((int)cabI) + "," + std::to_string((int)cabJ) + ")\n"+\
+					  "Mode                  : " + mode + "\n" +\
+					  "Time spent      : " + std::to_string((int)epochs) + "\n" +\
+					  "score                 : " + std::to_string((int)score);
 			this->setTextProperties(info, font, 16, inf);
 			
 //			printf("%d\n",actionCode);
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
-			//usleep(0.2 * 1000000);
+			if(epochs <= 20)
+				usleep(0.5 * 1000000);
 		}
 
 	}
