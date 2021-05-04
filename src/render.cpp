@@ -334,7 +334,7 @@ void Render::learn(\
 //			printf("%d\n",actionCode);
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
-			usleep(0.2 * 1000000);
+			//usleep(0.2 * 1000000);
 		}
 
 	}
@@ -355,6 +355,6 @@ void Render::stepFigure(\
 	this->env.decode(code, cabI, cabJ, passengerIdx, destIdx);
 	this->env.cab.setCurrPosition(cabI, cabJ);
 	this->createCab(cab);
-	this->createWall(wall);
-	this->createPassenger(textR, textG, textB, textY);
+//	this->createWall(wall);
+//	this->createPassenger(textR, textG, textB, textY);
 }

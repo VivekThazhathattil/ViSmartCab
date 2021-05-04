@@ -1,7 +1,8 @@
 #include "../include/env.h"
 #include <time.h>
+
 #include <cstdlib>
-//#include <cstdio>
+#include <cstdio>
 #define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
 
 Env::Env() {
@@ -59,11 +60,12 @@ void Env::initializeRewardTable(){
 		for (int j = 0; j < NUM_ACTIONS; j++){
 			this->rewardTable[E(i,j)].probability = 1;
 			this->rewardTable[E(i,j)].nextState = this->getNextState(i,j);
+			this->passenger.setPassengerStatus(false);// getNextState may cause passenger status to vary
 			this->rewardTable[E(i,j)].reward = this->getReward(i,j);
 			this->rewardTable[E(i,j)].done = this->isDone(i,j);
 		}
-	}
-}	
+	}	
+}
 
 void Env::resetQTable(){
 	for (int i = 0; i<  NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS ; i++)
@@ -105,11 +107,15 @@ int Env::getNextState(int state, int action){
 			break;
 
 		case 4: // pickup
+			if ( this->passenger.getPos(0,0) == cabI && this->passenger.getPos(0,1) == cabJ)
+				printf("pickup attempt at (%d,%d)\n",cabI,cabJ);
 			if (passengerIdx != 4 &&\
 					this->passenger.getPos(0,0) == cabI &&\
 					this->passenger.getPos(0,1) == cabJ\
 			   ){
-//				printf("passenger picked up\n"); passengerIdx = 4;
+				printf("passenger picked up\n");
+				passengerIdx = 4;
+				this->passenger.setPassengerStatus(true);
 				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
 			}
 			break;
@@ -118,11 +124,13 @@ int Env::getNextState(int state, int action){
 					this->passenger.getPos(1,0) == cabI &&\
 					this->passenger.getPos(1,1) == cabJ\
 			   ){
+				printf("passenger dropped off\n");
 				char a = this->passenger.getCode(0);
 				if (a == 'R') passengerIdx = 0;
 				else if (a == 'G') passengerIdx = 1;
 				else if (a == 'B') passengerIdx = 2;
 				else if (a == 'Y') passengerIdx = 3;
+				this->passenger.setPassengerStatus(false);
 				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
 
 			}

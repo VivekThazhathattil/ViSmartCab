@@ -3,14 +3,18 @@
 
 class Passenger{
 	private:
-		Position pickUpPos;
-		Position dropOffPos;
-		Position currPos;
+		Position pickUpGridPos; // in pixels
+		Position dropOffGridPos; // in pixels
+
+		Position pickUpPos;; // in grid pts
+		Position dropOffPos; // in grid pts
+		Position currPos; // in grid pts
 		char pickUpCode; // one of R,G,B,Y
 		char dropOffCode; // one of R,G,B,y
 		bool isPassengerInCab;
 
 		int setCoords(bool isPickup, int key, char coord);
+		int getPosFromLocCode(int& loc, char a);
 	public:
 		Passenger();
 		~Passenger();

@@ -1,10 +1,10 @@
 #include "../include/wall.h"
 
-#include <cstdio>
-#include <cstdlib>
-#include <string>
-#include <stdio.h>
-#include <iostream>
+//#include <cstdio>
+//#include <cstdlib>
+//#include <string>
+//#include <stdio.h>
+//#include <iostream>
 
 Wall::Wall() {
 	// manually set all the walls : Assuming NUM_WALLS = 5
@@ -62,7 +62,7 @@ bool Wall::checkWallCollision(int& cabI, int&cabJ, int& action){
 			}
 			else if (this->getWallType(wallPos) == 'V'){ // vertical wall
 				if ( action == 2){
-					std::cout<<"wall collision ("<< std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ") "<< std::to_string(int(action))<<std::endl;
+//					std::cout<<"wall collision ("<< std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ") "<< std::to_string(int(action))<<std::endl;
 					flag = true;
 				}
 	
@@ -76,7 +76,7 @@ bool Wall::checkWallCollision(int& cabI, int&cabJ, int& action){
 			}
 			else if (this->getWallType(wallPos) == 'V'){ // vertical wall
 				if (action == 3){
-					std::cout<<"wall collision ("<< std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ") "<< std::to_string(int(action))<<std::endl;
+//					std::cout<<"wall collision ("<< std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ") "<< std::to_string(int(action))<<std::endl;
 					flag = true;
 				}
 			}
