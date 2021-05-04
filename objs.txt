@@ -28,3 +28,5 @@ find a way to display the training with perceptible movement of the cab.
 [done] * more on screen data required: current reward, time spent
 [done] * store the qtable to a local file and use the values from the file in the program rerun.
 [done] * if time spent < 20, utime(0.5 * 100000) else dont use utime.
+
+* Make it more aesthetic: replace rectangles with sprites. make it pop.

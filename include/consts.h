@@ -16,6 +16,7 @@
 #define NUM_DEST_STATES 4
 
 #define NUM_ITERATIONS 100000
+#define NEG_LIM 0 //-100
 
 #define ALPHA 0.1
 #define GAMMA 0.6

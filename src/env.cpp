@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <cmath>
 
 //#include <cstdlib>
 //#include <cstdio>
@@ -161,11 +162,18 @@ int Env::getReward(int state, int action){
 		case 2: // east
 
 		case 3: // west
-			reward = -1; // all movements attribute to -1 reward
+			if(this->wall.checkWallCollision(cabI, cabJ, action))
+				reward = -2;
+			else
+				reward = -1; // all movements attribute to -1 reward
 			break;
 
 		case 4: // pickup
-			reward = -10;
+			/* correct pickup deserves positive reinforcement */
+			if (this->passenger.getPos(0,0) == cabI && this->passenger.getPos(0,1) == cabJ)
+				reward = 10;
+			else
+				reward = -5; /* wrong pickup needs to be punished */
 			break;
 
 		case 5: // dropoff
@@ -174,9 +182,9 @@ int Env::getReward(int state, int action){
 			this->passenger.getPos(1,1) == cabJ &&\
 			passengerIdx == 4\
 			)
-				reward = 20;
+				reward = 50;
 			else
-				reward = -10;
+				reward = -5; /* wrong drop off attempt punished */
 			break;
 	}
 	return reward;
@@ -346,7 +354,12 @@ void Env::saveQTableToFile(){
 		if(i==0)
 			qFile << this->iterator << std::endl;	
 		else
-			qFile << this->qTable[i-1] << std::endl;
+		{
+			if(!std::isinf(qTable[i-1]))
+				qFile << this->qTable[i-1] << std::endl;
+			else
+				qFile << NEG_LIM << std::endl;
+		}
 	}
 	qFile.close();
 }
@@ -364,8 +377,12 @@ void Env::getQTableFromFile(){
 	{
 		if (i == 0)
 			this->iterator = num;
-		else
-			this->qTable[i-1] = num;
+		else{
+			if(!std::isinf(num))
+				this->qTable[i-1] = num;
+			else
+				this->qTable[i-1] = NEG_LIM;
+		}
 		i++;
 	}
 }

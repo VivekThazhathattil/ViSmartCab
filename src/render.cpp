@@ -344,12 +344,15 @@ void Render::learn(\
 //			printf("%d\n",actionCode);
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
-			this->env.iterator = iter;
-			this->env.saveQTableToFile();
-			if(epochs <= 20)
-				usleep(0.5 * 1000000);
+			if(epochs <= 20){
+			//	usleep(0.5 * 1000000);
+			}
+			if(epochs > 4000) // should verify if its okay to do so!
+				break;
 		}
 
+			this->env.iterator = iter;
+			this->env.saveQTableToFile();
 	}
 }
 
