@@ -285,6 +285,7 @@ void Render::learn(\
 	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
 	float oldQ, newQ, nextMaxQ;
 	int actionCode;
+	float epsilon = EPSILON;
 	int iter = this->env.iterator;
 	std::string mode;
 
@@ -299,9 +300,10 @@ void Render::learn(\
 		updateFigure(cab, wall, textR, textG, textB, textY);
 		cabI = this->env.cab.getSpawnPosition('x');
 		cabJ = this->env.cab.getSpawnPosition('y');
-		if (this->env.passenger.getPassengerStatus())
-			passengerIdx = 4;
-		else{
+
+//		if (this->env.passenger.getPassengerStatus())
+//			passengerIdx = 4;
+//		else{
 			if(this->env.passenger.getCode(0) == 'R')
 				passengerIdx = 0;
 			else if(this->env.passenger.getCode(0) == 'G')
@@ -310,7 +312,7 @@ void Render::learn(\
 				passengerIdx = 2;
 			else if(this->env.passenger.getCode(0) == 'Y')
 				passengerIdx = 3;
-		}	
+//		}	
 		if(this->env.passenger.getCode(1) == 'R')
 			destIdx = 0;
 		else if(this->env.passenger.getCode(1) == 'G')
@@ -328,7 +330,7 @@ void Render::learn(\
 		while(!done){
                 	this->window.clear();
 			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-			if(r < EPSILON){
+			if(r < epsilon){
 				mode = "Explore";
 				actionCode = std::rand()%NUM_ACTIONS; //exploration
 			}
@@ -361,14 +363,14 @@ void Render::learn(\
 //			printf("%d\n",actionCode);
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
-			if(epochs <= 10){
-				//usleep(0.5 * 1000000);
+			if(epochs <= 100){
+				usleep(0.3 * 1000000);
 			}
-//			if(epochs > 4000) // should verify if its okay to do so!
-//				break;
+			if(epochs > 1000) // explore more if stuck
+				epsilon = ( (EPSILON + float(epochs)/10000) > 0.9 ? 0.9 : (EPSILON + float(epochs)/10000) );
 		}
 //			if (iter%50 == 0) // take rest to cool CPU
-//				usleep(2 * 1000000);
+//				usleep(120 * 1000000);
 
 			this->env.iterator = iter;
 			this->env.saveQTableToFile("./saveData/qTable.dat");

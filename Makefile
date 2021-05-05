@@ -4,3 +4,7 @@ build:	./src/*.cpp
 	g++ -g ./obj/*.o -o main -lsfml-graphics -lsfml-window -lsfml-system
 	chmod 755 ./main
 	./main
+
+clean: 
+	rm -rf ./obj
+	rm -rf ./saveData/*.dat

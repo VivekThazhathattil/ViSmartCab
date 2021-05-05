@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <cmath>
 #include "../include/position.h"
+#include <limits>
 
 //#include <cstdlib>
 //#include <cstdio>
@@ -73,17 +74,17 @@ void Env::initializeRewardTable(){
 		for (int j = 0; j < NUM_ACTIONS; j++){
 			this->rewardTable[E(i,j)].probability = 1;
 			this->rewardTable[E(i,j)].nextState = this->getNextState(i,j);
-			this->passenger.setPassengerStatus(false);// getNextState may cause passenger status to vary
 			this->rewardTable[E(i,j)].reward = this->getReward(i,j);
 			this->rewardTable[E(i,j)].done = this->isDone(i,j);
 		}
 	}	
+	this->passenger.setPassengerStatus(false);// getNextState may cause passenger status to vary
 	saveRewardTableToFile("./saveData/rewardTable.dat");
 }
 
 void Env::resetQTable(){
 	for (int i = 0; i<  NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS ; i++)
-		this->qTable[i] = 0;
+		this->qTable[i] = 0; // try optimistic initialization later
 }
 
 void Env::decode( int code, int& cabI, int& cabJ, int& passengerIdx, int& destIdx){
@@ -128,7 +129,7 @@ int Env::getNextState(int state, int action){
 		case 4: // pickup
 			if (passengerIdx != 4)
 				if ( passengerSpawnPos.x == cabI && passengerSpawnPos.y == cabJ && passengerIdx != 4){
-					this->passenger.tempPosCode = passengerIdx;
+					this->passenger.tempPosCode[state] = passengerIdx;
 					passengerIdx = 4;
 					this->passenger.setPassengerStatus(true);
 					code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
@@ -141,7 +142,8 @@ int Env::getNextState(int state, int action){
 			   ){
 //				printf("passenger dropped off at (%d,%d)\n",cabI,cabJ);
 				this->passenger.setPassengerStatus(false);
-				code = this->encode(cabI, cabJ, this->passenger.tempPosCode, destIdx);	
+				printf("tempPosCode : %d \n",this->passenger.tempPosCode[state]);
+				code = this->encode(cabI, cabJ, this->passenger.tempPosCode[state], destIdx);	
 
 			}
 			break;
@@ -287,7 +289,7 @@ void Env::learn(){
 
 int Env::getActionForMaxQValue(int& state){
 /* Looks in the QTable for a particular state and find the action with the max q-value*/
-	float maxVal = - 10000.0;
+	double maxVal = -1*(std::numeric_limits<float>::max());
 	int jCandidate = 0;
 	for(int j = 0; j < NUM_ACTIONS; j++){
 		if(this->qTable[E(state,j)] >= maxVal){
@@ -317,7 +319,8 @@ void Env::step(int actionCode, int state, int& nextState, int& reward, bool& don
 }
 
 double Env::getMaxQForState(int& state){
-	float maxVal = - 10000.0;
+	double maxVal = -1*(std::numeric_limits<float>::max());
+
 	for(int j = 0; j < NUM_ACTIONS; j++){
 		if(this->qTable[E(state,j)] > maxVal){
 			maxVal = this->qTable[E(state,j)];
@@ -371,8 +374,10 @@ void Env::saveQTableToFile(std::string fileName){
 		{
 			if(!std::isinf(qTable[i-1]))
 				qFile << this->qTable[i-1] << std::endl;
-			else
+			else{
 				qFile << NEG_LIM << std::endl;
+				printf("inf entry encountered at line no: %d while saving QTable to local file \n",i+1);
+			}
 		}
 	}
 	qFile.close();

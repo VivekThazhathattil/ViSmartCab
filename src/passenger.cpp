@@ -5,6 +5,8 @@
 
 Passenger::Passenger() {
 	this->setRandomSpawnAndDropPosition();
+	for (int i = 0; i <  NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES; i++)
+		this->tempPosCode[i] = 0;
 }
 Passenger::~Passenger(){}
 

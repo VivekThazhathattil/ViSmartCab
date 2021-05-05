@@ -15,7 +15,7 @@ class Passenger{
 
 		int setCoords(bool isPickup, int key, char coord);
 	public:
-		int tempPosCode; // temporary variable to hold the spawn position code when passengerIdx is set to 4
+		int tempPosCode[NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES]; // temporary variable to hold the spawn position code when passengerIdx is set to 4
 
 		Passenger();
 		~Passenger();
