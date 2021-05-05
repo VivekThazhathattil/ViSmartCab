@@ -14,8 +14,9 @@ class Passenger{
 		bool isPassengerInCab;
 
 		int setCoords(bool isPickup, int key, char coord);
-		int getPosFromLocCode(int& loc, char a);
 	public:
+		int tempPosCode; // temporary variable to hold the spawn position code when passengerIdx is set to 4
+
 		Passenger();
 		~Passenger();
 		void updatePassengerPosition(); // if passenger inside the cab, his position will change
@@ -26,6 +27,7 @@ class Passenger{
 		int getPos(int i, int j); // i : 0=pickUpPos 1=dropOffPos, j: 0=x 1=y
 		bool getPassengerStatus(); // is inside the cab or not
 		void setPassengerStatus(bool val);
+		Position getPosFromLocCode(int& loc);
 };
 
 int setCoords(int key, char coord);

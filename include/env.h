@@ -22,6 +22,7 @@ class Env{
 		int getNextState(int state, int action);
 		int getReward(int state, int action);
 		bool isDone(int state, int action);
+		void saveRewardTableToFile(std::string fileName);
 
 	public:
 		double qTable[ NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES * NUM_ACTIONS];
@@ -49,6 +50,6 @@ class Env{
 		void step(int actionCode, int state, int& nextState, int& reward, bool& done);
 		double getMaxQForState(int& state);
 		std::string actionCodeToString(int& code);
-		void saveQTableToFile();
+		void saveQTableToFile(std::string fileName);
 		void getQTableFromFile();
 };

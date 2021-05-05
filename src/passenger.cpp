@@ -17,13 +17,11 @@ void Passenger::setRandomSpawnAndDropPosition(){
 		loc2 = rand()%4;
 	this->pickUpGridPos.x = setCoords(true, loc1,'x');
 	this->pickUpGridPos.y = setCoords(true, loc1,'y');
-	this->pickUpPos.x = getPosFromLocCode(loc1,'x');
-	this->pickUpPos.y = getPosFromLocCode(loc1,'y');
+	this->pickUpPos = getPosFromLocCode(loc1);
 
 	this->dropOffGridPos.x = setCoords(false, loc2,'x');
 	this->dropOffGridPos.y = setCoords(false, loc2,'y');
-	this->dropOffPos.x = getPosFromLocCode(loc2, 'x');
-	this->dropOffPos.y = getPosFromLocCode(loc2, 'y');
+	this->dropOffPos = getPosFromLocCode(loc2);
 
 //	printf("loc1 = %d\n",loc1);
 //	printf("loc2 = %d\n",loc2);
@@ -34,26 +32,29 @@ void Passenger::setRandomSpawnAndDropPosition(){
 	this->currPos.y = this->pickUpPos.y;
 }
 
-int Passenger::getPosFromLocCode(int& loc, char a){
-	int pos;
-	switch(loc){
+Position Passenger::getPosFromLocCode(int& loc){
+	Position pos;
+	switch(loc){ //clockwise direction
 		case 0: //R
-			if ( a == 'x') pos = 0;
-			else pos = 0;
+			pos.x = 0;
+			pos.y = 0;
 			break;
 		case 1: //G
-			if ( a == 'x') pos = 4;
-			else pos = 0;
+			pos.x = 4;
+			pos.y = 0;
 			break;
 		case 2: //B
-			if ( a == 'x') pos = 3;
-			else pos = 4;
+			pos.x = 3;
+			pos.y = 4;
 			break;
 		case 3: //Y
-			if ( a == 'x') pos = 0;
-			else pos = 4;
+			pos.x = 0;
+			pos.y = 4;
 			break;
-
+		default:
+			pos.x = -1;
+			pos.y = -1;
+			break;
 	}
 	return pos;
 }
@@ -64,32 +65,28 @@ void Passenger::setSpecificSpawnAndDropPosition(int s, int d) {
 		case 0:
 			this->isPassengerInCab = false;
 			this->pickUpCode = 'R';
-			this->pickUpPos.x = getPosFromLocCode(s,'x');
-			this->pickUpPos.y = getPosFromLocCode(s,'y');
+			this->pickUpPos = getPosFromLocCode(s);
 			this->pickUpGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->pickUpGridPos.y = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 1:
 			this->isPassengerInCab = false;
 			this->pickUpCode = 'G';
-			this->pickUpPos.x = getPosFromLocCode(s,'x');
-			this->pickUpPos.y = getPosFromLocCode(s,'y');
+			this->pickUpPos = getPosFromLocCode(s);
 			this->pickUpGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			this->pickUpGridPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 2:
 			this->isPassengerInCab = false;
 			this->pickUpCode = 'B';
-			this->pickUpPos.x = getPosFromLocCode(s,'x');
-			this->pickUpPos.y = getPosFromLocCode(s,'y');
+			this->pickUpPos = getPosFromLocCode(s);
 			this->pickUpGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*3 + GRID_SIZE/2;
 			this->pickUpGridPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
 		case 3:
 			this->isPassengerInCab = false;
 			this->pickUpCode = 'Y';
-			this->pickUpPos.x = getPosFromLocCode(s,'x');
-			this->pickUpPos.y = getPosFromLocCode(s,'y');
+			this->pickUpPos = getPosFromLocCode(s);
 			this->pickUpGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->pickUpGridPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
@@ -98,29 +95,25 @@ void Passenger::setSpecificSpawnAndDropPosition(int s, int d) {
 	switch(d){ // didn't implement check for different s and d, assuming the user invokes correctly
 		case 0:
 			this->dropOffCode = 'R';
-			this->dropOffPos.x = getPosFromLocCode(d, 'x');
-			this->dropOffPos.y = getPosFromLocCode(d, 'y');
+			this->dropOffPos = getPosFromLocCode(d);
 			this->dropOffGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->dropOffGridPos.y = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 1:
 			this->dropOffCode = 'G';
-			this->dropOffPos.x = getPosFromLocCode(d, 'x');
-			this->dropOffPos.y = getPosFromLocCode(d, 'y');
+			this->dropOffPos = getPosFromLocCode(d);
 			this->dropOffGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			this->dropOffGridPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE/2;
 			break;
 		case 2:
 			this->dropOffCode = 'B';
-			this->dropOffPos.x = getPosFromLocCode(d, 'x');
-			this->dropOffPos.y = getPosFromLocCode(d, 'y');
+			this->dropOffPos = getPosFromLocCode(d);
 			this->dropOffGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE*3 + GRID_SIZE/2;
 			this->dropOffGridPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;
 		case 3:
 			this->dropOffCode = 'Y';
-			this->dropOffPos.x = getPosFromLocCode(d, 'x');
-			this->dropOffPos.y = getPosFromLocCode(d, 'y');
+			this->dropOffPos = getPosFromLocCode(d);
 			this->dropOffGridPos.x = (WINDOW_SIZE_X - NUM_GRIDS_X*GRID_SIZE)/2 + GRID_SIZE/2;
 			this->dropOffGridPos.y = (WINDOW_SIZE_Y - NUM_GRIDS_Y*GRID_SIZE)/2 + GRID_SIZE*4 + GRID_SIZE/2;
 			break;

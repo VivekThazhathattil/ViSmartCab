@@ -1,42 +1,45 @@
 g++ -g -std=c++17 -c ./src/*.cpp
-./src/env.cpp: In member function ‘void Env::initializeRewardTable()’:
-./src/env.cpp:68:22: error: qualified-id in declaration before ‘(’ token
-   68 | void Env::resetQTable(){
-      |                      ^
-./src/env.cpp:73:17: error: qualified-id in declaration before ‘(’ token
-   73 | void Env::decode( int code, int& cabI, int& cabJ, int& passengerIdx, int& destIdx){
+./src/env.cpp: In member function ‘int Env::getReward(int, int)’:
+./src/env.cpp:179:5: error: expected primary-expression before ‘)’ token
+  179 |     )
+      |     ^
+./src/env.cpp:199:17: error: qualified-id in declaration before ‘(’ token
+  199 | bool Env::isDone(int state, int action){
       |                 ^
-./src/env.cpp:82:22: error: qualified-id in declaration before ‘(’ token
-   82 | int Env::getNextState(int state, int action){
-      |                      ^
-./src/env.cpp:137:19: error: qualified-id in declaration before ‘(’ token
-  137 | int Env::getReward(int state, int action){
-      |                   ^
-./src/env.cpp:170:17: error: qualified-id in declaration before ‘(’ token
-  170 | bool Env::isDone(int state, int action){
-      |                 ^
-./src/env.cpp:198:16: error: qualified-id in declaration before ‘(’ token
-  198 | void Env::learn(){
+./src/env.cpp:228:16: error: qualified-id in declaration before ‘(’ token
+  228 | void Env::learn(){
       |                ^
-./src/env.cpp:255:31: error: qualified-id in declaration before ‘(’ token
-  255 | int Env::getActionForMaxQValue(int& state){
+./src/env.cpp:285:31: error: qualified-id in declaration before ‘(’ token
+  285 | int Env::getActionForMaxQValue(int& state){
       |                               ^
-./src/env.cpp:268:15: error: qualified-id in declaration before ‘(’ token
-  268 | void Env::step(int actionCode, int state, int& nextState, int& reward, bool& done){
+./src/env.cpp:298:15: error: qualified-id in declaration before ‘(’ token
+  298 | void Env::step(int actionCode, int state, int& nextState, int& reward, bool& done){
       |               ^
-./src/env.cpp:280:27: error: qualified-id in declaration before ‘(’ token
-  280 | float Env::getMaxQForState(int& state){
-      |                           ^
-./src/env.cpp:292:16: error: qualified-id in declaration before ‘(’ token
-  292 | void Env::reset(){
+./src/env.cpp:316:28: error: qualified-id in declaration before ‘(’ token
+  316 | double Env::getMaxQForState(int& state){
+      |                            ^
+./src/env.cpp:326:16: error: qualified-id in declaration before ‘(’ token
+  326 | void Env::reset(){
       |                ^
-./src/env.cpp:298:36: error: qualified-id in declaration before ‘(’ token
-  298 | std::string Env::actionCodeToString(int& code){
+./src/env.cpp:332:36: error: qualified-id in declaration before ‘(’ token
+  332 | std::string Env::actionCodeToString(int& code){
       |                                    ^
-./src/env.cpp:321:1: error: expected ‘}’ at end of input
-  321 | }
+./src/env.cpp:357:27: error: qualified-id in declaration before ‘(’ token
+  357 | void Env::saveQTableToFile(std::string fileName){
+      |                           ^
+./src/env.cpp:378:32: error: qualified-id in declaration before ‘(’ token
+  378 | void Env::saveRewardTableToFile(std::string fileName){
+      |                                ^
+./src/env.cpp:396:28: error: qualified-id in declaration before ‘(’ token
+  396 | void Env::getQTableFromFile(){
+      |                            ^
+./src/env.cpp:417:1: error: expected ‘}’ at end of input
+  417 | }
       | ^
-./src/env.cpp:56:34: note: to match this ‘{’
-   56 | void Env::initializeRewardTable(){
-      |                                  ^
+./src/env.cpp:152:42: note: to match this ‘{’
+  152 | int Env::getReward(int state, int action){
+      |                                          ^
+./src/env.cpp:417:1: warning: control reaches end of non-void function [-Wreturn-type]
+  417 | }
+      | ^
 make: *** [Makefile:2: build] Error 1

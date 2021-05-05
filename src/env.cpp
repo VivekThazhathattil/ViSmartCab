@@ -4,6 +4,7 @@
 #include <iostream>
 #include <filesystem>
 #include <cmath>
+#include "../include/position.h"
 
 //#include <cstdlib>
 //#include <cstdio>
@@ -77,6 +78,7 @@ void Env::initializeRewardTable(){
 			this->rewardTable[E(i,j)].done = this->isDone(i,j);
 		}
 	}	
+	saveRewardTableToFile("./saveData/rewardTable.dat");
 }
 
 void Env::resetQTable(){
@@ -96,7 +98,12 @@ void Env::decode( int code, int& cabI, int& cabJ, int& passengerIdx, int& destId
 int Env::getNextState(int state, int action){
 	int code = state;
 	int cabI, cabJ, passengerIdx, destIdx;
+	Position passengerSpawnPos, passengerDestPos;
 	decode(code, cabI, cabJ, passengerIdx, destIdx);
+	if (passengerIdx != 4)
+		passengerSpawnPos = this->passenger.getPosFromLocCode(passengerIdx);
+	passengerDestPos = this->passenger.getPosFromLocCode(destIdx);
+
 	switch(action){
 		case 0: // south
 			if(!this->wall.checkWallCollision(cabI, cabJ, action))
@@ -119,30 +126,22 @@ int Env::getNextState(int state, int action){
 			break;
 
 		case 4: // pickup
-			if ( this->passenger.getPos(0,0) == cabI && this->passenger.getPos(0,1) == cabJ)
-			if (passengerIdx != 4 &&\
-					this->passenger.getPos(0,0) == cabI &&\
-					this->passenger.getPos(0,1) == cabJ\
-			   ){
-//				printf("passenger picked up at (%d,%d)\n",cabI,cabJ);
-				passengerIdx = 4;
-				this->passenger.setPassengerStatus(true);
-				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
-			}
+			if (passengerIdx != 4)
+				if ( passengerSpawnPos.x == cabI && passengerSpawnPos.y == cabJ && passengerIdx != 4){
+					this->passenger.tempPosCode = passengerIdx;
+					passengerIdx = 4;
+					this->passenger.setPassengerStatus(true);
+					code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
+				}
 			break;
 		case 5: // dropoff
 			if (passengerIdx == 4 &&\
-					this->passenger.getPos(1,0) == cabI &&\
-					this->passenger.getPos(1,1) == cabJ\
+					passengerDestPos.x == cabI &&\
+					passengerDestPos.y == cabJ\
 			   ){
 //				printf("passenger dropped off at (%d,%d)\n",cabI,cabJ);
-				char a = this->passenger.getCode(0);
-				if (a == 'R') passengerIdx = 0;
-				else if (a == 'G') passengerIdx = 1;
-				else if (a == 'B') passengerIdx = 2;
-				else if (a == 'Y') passengerIdx = 3;
 				this->passenger.setPassengerStatus(false);
-				code = this->encode(cabI, cabJ, passengerIdx, destIdx);	
+				code = this->encode(cabI, cabJ, this->passenger.tempPosCode, destIdx);	
 
 			}
 			break;
@@ -153,6 +152,10 @@ int Env::getNextState(int state, int action){
 int Env::getReward(int state, int action){
 	int cabI, cabJ, passengerIdx, destIdx;
 	decode(state, cabI, cabJ, passengerIdx, destIdx);
+	Position passengerSpawnPos, passengerDestPos;
+	if (passengerIdx != 4)
+		passengerSpawnPos = this->passenger.getPosFromLocCode(passengerIdx);
+	passengerDestPos = this->passenger.getPosFromLocCode(destIdx);
 	int reward = 0;
 	switch(action){
 		case 0: // south
@@ -170,20 +173,22 @@ int Env::getReward(int state, int action){
 
 		case 4: // pickup
 			/* correct pickup deserves positive reinforcement */
-			if (this->passenger.getPos(0,0) == cabI &&\
-				       	this->passenger.getPos(0,1) == cabJ &&\
-					passengerIdx != 4\
-					// if passenger not inside the cab, then pickup is good!
-			)
-				reward = 10;
+			if (passengerIdx != 4){
+				if (	passengerSpawnPos.x == cabI &&\
+				       	passengerSpawnPos.y == cabJ\
+				)
+					reward = 10;
+				else
+					reward = -5;					
+			}
 			else
 				reward = -5; /* wrong pickup needs to be punished */
 			break;
 
 		case 5: // dropoff
 			if(\
-			this->passenger.getPos(1,0) == cabI &&\
-			this->passenger.getPos(1,1) == cabJ &&\
+			passengerDestPos.x == cabI &&\
+			passengerDestPos.y == cabJ &&\
 			passengerIdx == 4\
 			)
 				reward = 50;
@@ -198,6 +203,7 @@ bool Env::isDone(int state, int action){
 	int cabI, cabJ, passengerIdx, destIdx;
 	decode(state, cabI, cabJ, passengerIdx, destIdx);
 	bool flag = false;
+	Position passengerDestPos= this->passenger.getPosFromLocCode(destIdx);
 	switch(action){
 		case 0: // south
 
@@ -212,8 +218,8 @@ bool Env::isDone(int state, int action){
 
 		case 5: // dropoff
 			if(\
-			this->passenger.getPos(1,0) == cabI &&\
-			this->passenger.getPos(1,1) == cabJ &&\
+			passengerDestPos.x == cabI &&\
+			passengerDestPos.y == cabJ &&\
 			passengerIdx == 4\
 			)
 				flag = true;
@@ -297,20 +303,24 @@ void Env::step(int actionCode, int state, int& nextState, int& reward, bool& don
 	int cabI, cabJ, passengerIdx, destIdx;
 	decode(code, cabI, cabJ, passengerIdx, destIdx);
 
-	nextState = this->getNextState(state, actionCode);
+/*	nextState = this->getNextState(state, actionCode);
 	if (!this->passenger.getPassengerStatus() && passengerIdx == 4)
 		this->passenger.setPassengerStatus(true);
 	reward = this->getReward(state, actionCode);
-	done = this->isDone(state, actionCode);
+	done = this->isDone(state, actionCode); */
+
+	nextState = this->rewardTable[E(state,actionCode)].nextState;
+	if (!this->passenger.getPassengerStatus() && passengerIdx == 4)
+		this->passenger.setPassengerStatus(true);
+	reward = this->rewardTable[E(state,actionCode)].reward;
+	done = this->rewardTable[E(state,actionCode)].done;
 }
 
 double Env::getMaxQForState(int& state){
 	float maxVal = - 10000.0;
-	int jCandidate = 0;
 	for(int j = 0; j < NUM_ACTIONS; j++){
 		if(this->qTable[E(state,j)] > maxVal){
 			maxVal = this->qTable[E(state,j)];
-			jCandidate = j;
 		}
 	}
 	return maxVal;
@@ -347,9 +357,9 @@ std::string Env::actionCodeToString(int& code){
 	return text;
 }
 
-void Env::saveQTableToFile(){
+void Env::saveQTableToFile(std::string fileName){
 	std::ofstream qFile;
-	qFile.open("./saveData/qTable.dat", std::fstream::trunc);
+	qFile.open(fileName, std::fstream::trunc);
 	if(!qFile.is_open()){
 	        std::cerr << "There was a problem opening the input file!\n";
 		exit(1);
@@ -364,6 +374,24 @@ void Env::saveQTableToFile(){
 			else
 				qFile << NEG_LIM << std::endl;
 		}
+	}
+	qFile.close();
+}
+
+void Env::saveRewardTableToFile(std::string fileName){
+	int cabI0, cabI1, cabJ0, cabJ1, psg_idx0, dest_idx0, psg_idx1, dest_idx1;
+	std::ofstream qFile;
+	qFile.open(fileName, std::fstream::trunc);
+	if(!qFile.is_open()){
+	        std::cerr << "There was a problem opening the input file!\n";
+		exit(1);
+	}
+	qFile << "(state,action)   init_cab_pos    next_cab_pos    psg_spawn_idx0    psg_spawn_idx1    psg_dest_idx0    psg_dest_idx1    reward\n";
+	for (int i = 0; i < NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES; i++)
+	for (int j = 0; j < NUM_ACTIONS; j++){
+		this->decode((i)%(NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES),cabI0,cabJ0,psg_idx0,dest_idx0);
+		this->decode(rewardTable[E(i,j)].nextState,cabI1,cabJ1,psg_idx1,dest_idx1);
+		qFile << "(" << i << "," << actionCodeToString(j) << ")" << "\t (" << cabI0 << "," <<cabJ0 << ") ---> (" << cabI1 << "," << cabJ1 << ")\t " << psg_idx0 << " ---> " << psg_idx1 << "\t" << dest_idx0 << " ---> " << dest_idx1 << " \t " << rewardTable[E(i,j)].reward << std::endl;
 	}
 	qFile.close();
 }

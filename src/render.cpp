@@ -362,14 +362,16 @@ void Render::learn(\
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
 			if(epochs <= 10){
-				usleep(0.5 * 1000000);
+				//usleep(0.5 * 1000000);
 			}
 //			if(epochs > 4000) // should verify if its okay to do so!
 //				break;
 		}
+//			if (iter%50 == 0) // take rest to cool CPU
+//				usleep(2 * 1000000);
 
 			this->env.iterator = iter;
-			this->env.saveQTableToFile();
+			this->env.saveQTableToFile("./saveData/qTable.dat");
 	}
 }
 
