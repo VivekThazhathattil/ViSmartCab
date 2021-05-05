@@ -288,14 +288,9 @@ void Render::learn(\
 	float epsilon = EPSILON;
 	int iter = this->env.iterator;
 	std::string mode;
+	float adjustableWaitTime = 0.3;
 
 	for (; iter < NUM_ITERATIONS && this->window.isOpen(); iter++){
-		sf::Event e;
-                while(window.pollEvent(e))
-                {
-                        if (e.type == sf::Event::Closed)
-                                this->window.close();
-                }
 		this->env.reset(); //reset our sample space
 		updateFigure(cab, wall, textR, textG, textB, textY);
 		cabI = this->env.cab.getSpawnPosition('x');
@@ -328,6 +323,23 @@ void Render::learn(\
 		done = false;
 		score = 0;
 		while(!done){
+			sf::Event e;
+	                while(window.pollEvent(e))
+	                {
+	                        if (e.type == sf::Event::Closed)
+	                                this->window.close();
+				if (e.type == sf::Event::KeyPressed){
+					if(e.key.code == sf::Keyboard::Up){
+						adjustableWaitTime += 0.01;
+						printf("adjustableWaitTime = %f\n",adjustableWaitTime);
+					}
+					else if(e.key.code == sf::Keyboard::Down){
+						adjustableWaitTime = ((adjustableWaitTime - 0.01 < 0) ? 0 : (adjustableWaitTime - 0.01));
+						printf("adjustableWaitTime = %f\n",adjustableWaitTime);
+					}
+						
+				}
+	                }
                 	this->window.clear();
 			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
 			if(r < epsilon){
@@ -340,7 +352,7 @@ void Render::learn(\
 			}
 			this->env.step(actionCode, state, nextState, reward, done);
 			oldQ = this->env.qTable[E(state,actionCode)];
-			nextMaxQ = this->env.getMaxQForState(state);
+			nextMaxQ = this->env.getMaxQForState(nextState);
 			newQ = ((1-ALPHA) * oldQ)+\
 			       (ALPHA * (reward + GAMMA * nextMaxQ));
 			this->env.qTable[E(state, actionCode)] = newQ;
@@ -363,15 +375,14 @@ void Render::learn(\
 //			printf("%d\n",actionCode);
 			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
-			if(epochs <= 100){
-				usleep(0.3 * 1000000);
-			}
-			if(epochs > 1000) // explore more if stuck
-				epsilon = ( (EPSILON + float(epochs)/10000) > 0.9 ? 0.9 : (EPSILON + float(epochs)/10000) );
-		}
-//			if (iter%50 == 0) // take rest to cool CPU
-//				usleep(120 * 1000000);
 
+			usleep(adjustableWaitTime * 1000000);
+//			if(epochs <= 10){
+//				usleep(0.3 * 1000000);
+//			}
+			if(epochs > 1000) // explore more if stuck
+				epsilon = ( (EPSILON + 2*float(epochs)/10000) > 0.9 ? 0.9 : (EPSILON + 2*float(epochs)/10000) );
+		}
 			this->env.iterator = iter;
 			this->env.saveQTableToFile("./saveData/qTable.dat");
 	}
