@@ -230,63 +230,6 @@ bool Env::isDone(int state, int action){
 	return flag;
 }
 
-void Env::learn(){
-	std::srand(time(0));
-	int epochs, penalties, reward;
-	bool done;
-	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
-	float oldQ, newQ, nextMaxQ;
-	int actionCode;
-	for (int i = 0; i < NUM_ITERATIONS; i++){
-		this->reset(); //reset our sample space
-		cabI = this->cab.getSpawnPosition('x');
-		cabJ = this->cab.getSpawnPosition('y');
-		if (this->passenger.getPassengerStatus())
-			passengerIdx = 4;
-		else{
-			if(this->passenger.getCode(0) == 'R')
-				passengerIdx = 0;
-			else if(this->passenger.getCode(0) == 'G')
-				passengerIdx = 1;
-			else if(this->passenger.getCode(0) == 'B')
-				passengerIdx = 2;
-			else if(this->passenger.getCode(0) == 'Y')
-				passengerIdx = 3;
-		}	
-		if(this->passenger.getCode(1) == 'R')
-			destIdx = 0;
-		else if(this->passenger.getCode(1) == 'G')
-			destIdx = 1;
-		else if(this->passenger.getCode(1) == 'B')
-			destIdx = 2;
-		else if(this->passenger.getCode(1) == 'Y')
-			destIdx = 3;
-		state = this->encode(cabI, cabJ, passengerIdx, destIdx);
-		epochs = 0;
-		penalties = 0;
-		reward = 0;
-		done = false;
-		while(!done){
-			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-			if(r < EPSILON)
-				actionCode = std::rand()%NUM_ACTIONS; //exploration
-			else
-				actionCode = this->getActionForMaxQValue(state); //exploitation
-			this->step(actionCode, state, nextState, reward, done);
-			oldQ = this->qTable[E(state,actionCode)];
-			nextMaxQ = this->getMaxQForState(state);
-			newQ = ((1-ALPHA) * oldQ)+\
-			       (ALPHA * (reward + GAMMA * nextMaxQ));
-			this->qTable[E(state, actionCode)] = newQ;
-			if (reward == -10)
-				penalties += 1;
-			state = nextState;
-			epochs += 1;
-		}
-
-	}
-}
-
 int Env::getActionForMaxQValue(int& state){
 /* Looks in the QTable for a particular state and find the action with the max q-value*/
 	double maxVal = -1*(std::numeric_limits<float>::max());
