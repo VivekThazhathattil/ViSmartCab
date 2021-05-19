@@ -7,24 +7,25 @@
 #define E(x,y) ((x) + (y * NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES * NUM_DEST_STATES))
 
 Render::Render() : window(sf::RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "SMARTCAB in C++!", sf::Style::Close)) {
-	if(!this->parkingLotTexture.loadFromFile("res/road.png")){
+	std::srand(time(0));
+	if(!parkingLotTexture.loadFromFile("res/road.png")){
 		printf("error loading parkingLotTexture from file\n");
 	}
-	if(!this->cabTexture.loadFromFile("res/cab.png")){
+	if(!cabTexture.loadFromFile("res/cab.png")){
 		printf("error loading parkingLotTexture from file\n");
 	}
-	if(!this->wallTexture.loadFromFile("res/wall.png")){
+	if(!wallTexture.loadFromFile("res/wall.png")){
 		printf("error loading parkingLotTexture from file\n");
 	}
 }
 Render::~Render() {}
 
 void Render::runSimulation(){
-	this->window.setPosition(sf::Vector2i(100,100));
+	window.setPosition(sf::Vector2i(100,100));
 
 	std::vector<sf::RectangleShape> parkingLot;
 	sf::RectangleShape cab;
-	cab.setTexture(&this->cabTexture,true);
+	cab.setTexture(&cabTexture,true);
 	std::vector<sf::RectangleShape> wall;
 
 	sf::Font font; // for RGBY markings
@@ -40,21 +41,21 @@ void Render::runSimulation(){
 	createRGBYMarkings(textR, textG, textB, textY, font);
 	updateFigure(cab, wall, textR, textG, textB, textY);
 
-/*	printf("%d\n",this->env.encodeNEditState(3,1,2,0));
+/*	printf("%d\n",env.encodeNEditState(3,1,2,0));
 	updateFigure(cab, wall, textR, textG, textB, textY);*/
 
-/*	while(this->window.isOpen()){
+/*	while(window.isOpen()){
 		sf::Event e;
                 while(window.pollEvent(e))
                 {
                         if (e.type == sf::Event::Closed)
-                                this->window.close();
+                                window.close();
                 }
-                this->window.clear();
+                window.clear();
 		drawNDisplay(parkingLot, cab, wall, textR, textG, textB, textY);
 	} */
 
-	this->learn(parkingLot, cab, wall, textR, textG, textB, textY );
+	learn(parkingLot, cab, wall, textR, textG, textB, textY );
 }
 
 void Render::updateFigure(\
@@ -91,7 +92,7 @@ void Render::createParkingLot(std::vector<sf::RectangleShape>& pl){
 //			rect.setFillColor(sf::Color::Black);
 			rect.setOutlineThickness(2);
 			rect.setOutlineColor(sf::Color::Black);
-			rect.setTexture(&this->parkingLotTexture);
+			rect.setTexture(&parkingLotTexture);
 			pl.push_back(rect);
 		}
 	}
@@ -109,10 +110,10 @@ void Render::setTextProperties(sf::Text& text, sf::Font& font, int fontSize, std
 void Render::createRGBYMarkings(sf::Text& R, sf::Text& G ,sf::Text& B, sf::Text& Y, sf::Font& font){
 	sf::Vector2f offset = getOffset();
 
-	this->setTextProperties(R, font, 28, "R");
-	this->setTextProperties(G, font, 28, "G");
-	this->setTextProperties(B, font, 28, "B");
-	this->setTextProperties(Y, font, 28, "Y");
+	setTextProperties(R, font, 28, "R");
+	setTextProperties(G, font, 28, "G");
+	setTextProperties(B, font, 28, "B");
+	setTextProperties(Y, font, 28, "Y");
 
 	R.setOrigin(\
 			R.getGlobalBounds().width/2,\
@@ -131,15 +132,15 @@ void Render::createRGBYMarkings(sf::Text& R, sf::Text& G ,sf::Text& B, sf::Text&
 			Y.getGlobalBounds().height/2\
 		   );
 
-	R.setPosition(this->env.R.x, this->env.R.y);
-	G.setPosition(this->env.G.x, this->env.G.y);
-	B.setPosition(this->env.B.x, this->env.B.y);
-	Y.setPosition(this->env.Y.x, this->env.Y.y);
+	R.setPosition(env.R.x, env.R.y);
+	G.setPosition(env.G.x, env.G.y);
+	B.setPosition(env.B.x, env.B.y);
+	Y.setPosition(env.Y.x, env.Y.y);
 }
 
 void Render::createCab(sf::RectangleShape& cab){
-	int i = this->env.cab.getCurrPosition('x');
-	int j = this->env.cab.getCurrPosition('y');
+	int i = env.cab.getCurrPosition('x');
+	int j = env.cab.getCurrPosition('y');
 	sf::Vector2f offset = getOffset();
 	cab.setOrigin(sf::Vector2f(CAB_X/2, CAB_Y/2));
 	cab.setPosition(sf::Vector2f(\
@@ -147,7 +148,7 @@ void Render::createCab(sf::RectangleShape& cab){
 				offset.y + j*GRID_SIZE + GRID_SIZE/2\
 				));
 	cab.setSize(sf::Vector2f(CAB_X,CAB_Y));
-	if(this->env.passenger.getPassengerStatus())
+	if(env.passenger.getPassengerStatus())
 		cab.setFillColor(sf::Color(0,255,0,255));
 	else
 		cab.setFillColor(sf::Color::White);
@@ -163,7 +164,7 @@ void Render::createWall(std::vector<sf::RectangleShape>& wall){
 	sf::RectangleShape rect;
 	sf::Vector2f offset = getOffset();
 	for (int i = 0; i < NUM_WALLS; i++){
-		wp = this->env.wall.getWallPosition(i);
+		wp = env.wall.getWallPosition(i);
 		if(wp.x0 == wp.x1) // horizontal wall
 		{ 
 			rect.setOrigin(sf::Vector2f(0, WALL_Y/2));
@@ -175,7 +176,7 @@ void Render::createWall(std::vector<sf::RectangleShape>& wall){
 			rect.setFillColor(sf::Color::White);
 			rect.setOutlineThickness(0);
 			rect.setOutlineColor(sf::Color::White);
-			rect.setTexture(&this->wallTexture);
+			rect.setTexture(&wallTexture);
 			wall.push_back(rect);
 		}
 		else if (wp.y0 == wp.y1) // vertical wall
@@ -189,7 +190,7 @@ void Render::createWall(std::vector<sf::RectangleShape>& wall){
 			rect.setFillColor(sf::Color::White);
 			rect.setOutlineThickness(1);
 			rect.setOutlineColor(sf::Color::Black);
-			rect.setTexture(&this->wallTexture);
+			rect.setTexture(&wallTexture);
 			wall.push_back(rect);
 		}
 	}
@@ -204,8 +205,8 @@ void Render::resetTextColor(sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y){
 
 void Render::createPassenger( sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y){
 
-	this->resetTextColor(R,G,B,Y);
-	switch(this->env.passenger.getCode(0)){
+	resetTextColor(R,G,B,Y);
+	switch(env.passenger.getCode(0)){
 		case 'R':
 			R.setFillColor(sf::Color::Magenta);
 			break;
@@ -219,7 +220,7 @@ void Render::createPassenger( sf::Text& R, sf::Text& G, sf::Text& B, sf::Text& Y
 			Y.setFillColor(sf::Color::Magenta);
 			break;
 	}	
-	switch(this->env.passenger.getCode(1)){
+	switch(env.passenger.getCode(1)){
 		case 'R':
 			R.setFillColor(sf::Color::Cyan);
 			break;
@@ -248,21 +249,21 @@ void Render::drawNDisplay(\
 
 	for (int i = 0; i < NUM_GRIDS_X; i++){
 		for (int j = 0; j < NUM_GRIDS_Y; j++){
-		this->window.draw(pl[IX(i,j)]);
+		window.draw(pl[IX(i,j)]);
 		}
 	}
 
-	this->window.draw(R);
-	this->window.draw(G);
-	this->window.draw(B);
-	this->window.draw(Y);
-	this->window.draw(info);
+	window.draw(R);
+	window.draw(G);
+	window.draw(B);
+	window.draw(Y);
+	window.draw(info);
 
-	this->window.draw(cab);
+	window.draw(cab);
 	for (int i = 0; i < wall.size(); i++){
-		this->window.draw(wall[i]);
+		window.draw(wall[i]);
 	}
-	this->window.display();
+	window.display();
 }
 
 void Render::learn(\
@@ -279,44 +280,43 @@ void Render::learn(\
 	if(!font.loadFromFile("res/arial.ttf")){
 		printf("Error in loading font from file\n");
 	}
-	std::srand(time(0));
 	int epochs, penalties, reward, score;
 	bool done;
 	int cabI, cabJ, passengerIdx, destIdx, state, nextState;
 	float oldQ, newQ, nextMaxQ;
 	int actionCode;
 	float epsilon = EPSILON;
-	int iter = this->env.iterator;
+	int iter = env.iterator;
 	std::string mode;
 	float adjustableWaitTime = 0.3;
 
-	for (; iter < NUM_ITERATIONS && this->window.isOpen(); iter++){
-		this->env.reset(); //reset our sample space
+	for (; iter < NUM_ITERATIONS && window.isOpen(); iter++){
+		env.reset(); //reset our sample space
 		updateFigure(cab, wall, textR, textG, textB, textY);
-		cabI = this->env.cab.getSpawnPosition('x');
-		cabJ = this->env.cab.getSpawnPosition('y');
+		cabI = env.cab.getSpawnPosition('x');
+		cabJ = env.cab.getSpawnPosition('y');
 
-//		if (this->env.passenger.getPassengerStatus())
+//		if (env.passenger.getPassengerStatus())
 //			passengerIdx = 4;
 //		else{
-			if(this->env.passenger.getCode(0) == 'R')
+			if(env.passenger.getCode(0) == 'R')
 				passengerIdx = 0;
-			else if(this->env.passenger.getCode(0) == 'G')
+			else if(env.passenger.getCode(0) == 'G')
 				passengerIdx = 1;
-			else if(this->env.passenger.getCode(0) == 'B')
+			else if(env.passenger.getCode(0) == 'B')
 				passengerIdx = 2;
-			else if(this->env.passenger.getCode(0) == 'Y')
+			else if(env.passenger.getCode(0) == 'Y')
 				passengerIdx = 3;
 //		}	
-		if(this->env.passenger.getCode(1) == 'R')
+		if(env.passenger.getCode(1) == 'R')
 			destIdx = 0;
-		else if(this->env.passenger.getCode(1) == 'G')
+		else if(env.passenger.getCode(1) == 'G')
 			destIdx = 1;
-		else if(this->env.passenger.getCode(1) == 'B')
+		else if(env.passenger.getCode(1) == 'B')
 			destIdx = 2;
-		else if(this->env.passenger.getCode(1) == 'Y')
+		else if(env.passenger.getCode(1) == 'Y')
 			destIdx = 3;
-		state = this->env.encode(cabI, cabJ, passengerIdx, destIdx);
+		state = env.encode(cabI, cabJ, passengerIdx, destIdx);
 		epochs = 0;
 		penalties = 0;
 		reward = 0;
@@ -327,7 +327,7 @@ void Render::learn(\
 	                while(window.pollEvent(e))
 	                {
 	                        if (e.type == sf::Event::Closed)
-	                                this->window.close();
+	                                window.close();
 				if (e.type == sf::Event::KeyPressed){
 					if(e.key.code == sf::Keyboard::Up){
 						adjustableWaitTime += 0.01;
@@ -340,7 +340,7 @@ void Render::learn(\
 						
 				}
 	                }
-                	this->window.clear();
+                	window.clear();
 			float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
 			if(r < epsilon){
 				mode = "Explore";
@@ -348,32 +348,32 @@ void Render::learn(\
 			}
 			else{
 				mode = "Exploit";
-				actionCode = this->env.getActionForMaxQValue(state); //exploitation
+				actionCode = env.getActionForMaxQValue(state); //exploitation
 			}
-			this->env.step(actionCode, state, nextState, reward, done);
-			oldQ = this->env.qTable[E(state,actionCode)];
-			nextMaxQ = this->env.getMaxQForState(nextState);
+			env.step(actionCode, state, nextState, reward, done);
+			oldQ = env.qTable[E(state,actionCode)];
+			nextMaxQ = env.getMaxQForState(nextState);
 			newQ = ((1-ALPHA) * oldQ)+\
 			       (ALPHA * (reward + GAMMA * nextMaxQ));
-			this->env.qTable[E(state, actionCode)] = newQ;
+			env.qTable[E(state, actionCode)] = newQ;
 			if (reward == -10)
 				penalties += 1;
 			score += reward;
 			state = nextState;
 			epochs += 1;
 
-			this->env.decode(state, cabI, cabJ, passengerIdx, destIdx);
+			env.decode(state, cabI, cabJ, passengerIdx, destIdx);
 			std::string inf = "Episode no.      : " + std::to_string((int)(iter+1)) + "\n"+\
-					  "Action                : " + this->env.actionCodeToString(actionCode) + "\n"+\
+					  "Action                : " + env.actionCodeToString(actionCode) + "\n"+\
 					  "State                 : " + std::to_string((int)state) + "\n" +\
 					  "Cab Location    : " + "(" + std::to_string((int)cabI) + "," + std::to_string((int)cabJ) + ")\n"+\
 					  "Mode                  : " + mode + "\n" +\
 					  "Time spent      : " + std::to_string((int)epochs) + "\n" +\
 					  "score                 : " + std::to_string((int)score);
-			this->setTextProperties(info, font, 16, inf);
+			setTextProperties(info, font, 16, inf);
 			
 //			printf("%d\n",actionCode);
-			this->stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
+			stepFigure(nextState, pl, cab, wall, textR, textG, textB, textY);
 			drawNDisplay(pl, cab, wall, textR, textG, textB, textY, info);
 
 			usleep(adjustableWaitTime * 1000000);
@@ -383,8 +383,8 @@ void Render::learn(\
 			if(epochs > 1000) // explore more if stuck
 				epsilon = ( (EPSILON + 2*float(epochs)/10000) > 0.9 ? 0.9 : (EPSILON + 2*float(epochs)/10000) );
 		}
-			this->env.iterator = iter;
-			this->env.saveQTableToFile("./saveData/qTable.dat");
+			env.iterator = iter;
+			env.saveQTableToFile("./saveData/qTable.dat");
 	}
 }
 
@@ -400,9 +400,9 @@ void Render::stepFigure(\
 ){
 	int code = nextState;
 	int cabI, cabJ, passengerIdx, destIdx;
-	this->env.decode(code, cabI, cabJ, passengerIdx, destIdx);
-	this->env.cab.setCurrPosition(cabI, cabJ);
-	this->createCab(cab);
-//	this->createWall(wall);
-//	this->createPassenger(textR, textG, textB, textY);
+	env.decode(code, cabI, cabJ, passengerIdx, destIdx);
+	env.cab.setCurrPosition(cabI, cabJ);
+	createCab(cab);
+//	createWall(wall);
+//	createPassenger(textR, textG, textB, textY);
 }
