@@ -1,14 +1,17 @@
-#include "position.h"
 #include "consts.h"
+#include "position.h"
 
-class Wall{
-	private:
-		WallPosition wallPos[NUM_WALLS];
-		char getWallType(WallPosition& w);
-	public:
-		Wall();
-		~Wall();
+class Wall {
+private:
+  WallPosition wallPos[NUM_WALLS];
+  char getWallType(WallPosition &w);
 
-		WallPosition getWallPosition(int num);
-		bool checkWallCollision(int& cabI, int&cabJ, int& action); // should check for boundary cases as well
+public:
+  Wall();
+  ~Wall();
+
+  WallPosition getWallPosition(int num);
+  bool
+  checkWallCollision(int &cabI, int &cabJ,
+                     int &action); // should check for boundary cases as well
 };

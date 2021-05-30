@@ -1,16 +1,17 @@
 #include "position.h"
 
-class Cab{
-	private:
-		Position spawnPos;
-		Position currPos;
-	public:
-		Cab();
-		~Cab();
-		void performAction();
-		void setRandomSpawnPosition();
-		int getSpawnPosition(char i);
-		void setSpecificSpawnPosition(int x, int y);
-		int getCurrPosition(char i);
-		void setCurrPosition(int& x, int& y);
+class Cab {
+private:
+  Position spawnPos;
+  Position currPos;
+
+public:
+  Cab();
+  ~Cab();
+  void performAction();
+  void setRandomSpawnPosition();
+  int getSpawnPosition(char i);
+  void setSpecificSpawnPosition(int x, int y);
+  int getCurrPosition(char i);
+  void setCurrPosition(int &x, int &y);
 };

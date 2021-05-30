@@ -5,8 +5,8 @@
 #define GRID_SIZE 80
 #define NUM_GRIDS_X 5
 #define NUM_GRIDS_Y 5
-#define CAB_X 3 * GRID_SIZE/10
-#define CAB_Y 7 * GRID_SIZE/10
+#define CAB_X 3 * GRID_SIZE / 10
+#define CAB_Y 7 * GRID_SIZE / 10
 #define NUM_WALLS 5
 #define WALL_X 10 // width of wall if horizontal
 #define WALL_Y 10 // width of wall if vertical
