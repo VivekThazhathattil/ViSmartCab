@@ -57,7 +57,7 @@ bool Wall::checkWallCollision(int &cabI, int &cabJ, int &action) {
       } else if (getWallType(wallPos) == 'V') { // vertical wall
         if (action == 2) {
           //					std::cout<<"wall collision ("<<
-          //std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ")
+          // std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ")
           //"<< std::to_string(int(action))<<std::endl;
           flag = true;
         }
@@ -71,7 +71,7 @@ bool Wall::checkWallCollision(int &cabI, int &cabJ, int &action) {
       } else if (getWallType(wallPos) == 'V') { // vertical wall
         if (action == 3) {
           //					std::cout<<"wall collision ("<<
-          //std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ")
+          // std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ")
           //"<< std::to_string(int(action))<<std::endl;
           flag = true;
         }
