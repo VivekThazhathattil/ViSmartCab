@@ -129,6 +129,8 @@ void Render::createRGBYMarkings(sf::Text &R, sf::Text &G, sf::Text &B,
 void Render::createCab(sf::RectangleShape &cab) {
   int i = env.cab.getCurrPosition('x');
   int j = env.cab.getCurrPosition('y');
+  int orientation = env.cab.getOrientation();
+
   sf::Vector2f offset = getOffset();
   cab.setOrigin(sf::Vector2f(CAB_X / 2, CAB_Y / 2));
   cab.setPosition(sf::Vector2f(offset.x + i * GRID_SIZE + GRID_SIZE / 2,
@@ -139,6 +141,7 @@ void Render::createCab(sf::RectangleShape &cab) {
   else
     cab.setFillColor(sf::Color::White);
   cab.setScale(2.5, 1.0);
+  cab.setRotation(orientation);
   //	else
   //		cab.setFillColor(sf::Color::Yellow);
   //	cab.setOutlineThickness(2);

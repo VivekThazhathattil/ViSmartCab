@@ -10,9 +10,20 @@
 #define NUM_WALLS 5
 #define WALL_X 10 // width of wall if horizontal
 #define WALL_Y 10 // width of wall if vertical
+                  //
+/*
+ * The six deterministic actions of the taxicab are:
+ * 1. move north
+ * 2. move south
+ * 3. move east
+ * 4. move west
+ * 5. drop passenger
+ * 6. pick passenger
+ */
 #define NUM_ACTIONS 6
 
-#define NUM_PASSENGER_STATES 5
+#define NUM_PASSENGER_STATES 5 
+
 #define NUM_DEST_STATES 4
 
 #define NUM_ITERATIONS 100000

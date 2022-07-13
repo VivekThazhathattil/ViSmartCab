@@ -10,32 +10,30 @@ Wall::Wall() {
   // manually set all the walls : Assuming NUM_WALLS = 5
   // set the coords in top-down order for horizontal walls and left-right order
   // for vertical walls
-  wallPos[0].x0 = 0;
-  wallPos[0].y0 = 3;
-  wallPos[0].x1 = 1;
-  wallPos[0].y1 = 3;
-
-  wallPos[1].x0 = 0;
-  wallPos[1].y0 = 4;
-  wallPos[1].x1 = 1;
-  wallPos[1].y1 = 4;
-
-  wallPos[2].x0 = 2;
-  wallPos[2].y0 = 3;
-  wallPos[2].x1 = 3;
-  wallPos[2].y1 = 3;
-
-  wallPos[3].x0 = 2;
-  wallPos[3].y0 = 4;
-  wallPos[3].x1 = 3;
-  wallPos[3].y1 = 4;
-
-  wallPos[4].x0 = 1;
-  wallPos[4].y0 = 0;
-  wallPos[4].x1 = 2;
-  wallPos[4].y1 = 0;
+  //
+  addWall(0, 'v', 1, 0, 3);
+  addWall(1, 'v', 1, 0, 4);
+  addWall(2, 'v', 1, 2, 3);
+  addWall(3, 'v', 1, 2, 4);
+  addWall(4, 'v', 1, 1, 0);
 }
 Wall::~Wall() {}
+
+void Wall::addWall(int wallIdx, char orientation, int length, int originX, int originY) {
+    wallPos[wallIdx].x0 = originX;
+    wallPos[wallIdx].y0 = originY;
+
+    if(orientation == 'v'){
+        wallPos[wallIdx].x1 = originX + length;
+        wallPos[wallIdx].y1 = originY;
+    }
+
+    else{
+        wallPos[wallIdx].x1 = originX;
+        wallPos[wallIdx].y1 = originY + length;
+    }
+    return;
+}
 
 WallPosition Wall::getWallPosition(int num) { return wallPos[num]; }
 bool Wall::checkWallCollision(int &cabI, int &cabJ, int &action) {

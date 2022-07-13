@@ -2,7 +2,10 @@
 #include <cstdlib>
 #include <time.h>
 
-Cab::Cab() { setRandomSpawnPosition(); }
+Cab::Cab() {
+    setRandomSpawnPosition();
+    setOrientation(0);
+}
 Cab::~Cab() {}
 
 int Cab::getSpawnPosition(char i) {
@@ -20,6 +23,14 @@ int Cab::getCurrPosition(char i) {
 }
 
 void Cab::setCurrPosition(int &x, int &y) {
+  if (y < currPos.y)
+    setOrientation(0);
+  else if (y > currPos.y)
+    setOrientation(180);
+  else if (x < currPos.x)
+    setOrientation(90);
+  else
+    setOrientation(270);
   currPos.x = x;
   currPos.y = y;
 }
@@ -37,3 +48,13 @@ void Cab::setSpecificSpawnPosition(int x, int y) {
   currPos.x = spawnPos.x;
   currPos.y = spawnPos.y;
 }
+
+int Cab::getOrientation(void){
+    return moveDirection;
+}
+
+void Cab::setOrientation(int orientation){
+    moveDirection = orientation;
+    return;
+}
+
