@@ -17,6 +17,9 @@ Wall::Wall() {
   addWall('v', 1, 3, 3);
   addWall('v', 1, 4, 3);
   addWall('h', 1, 2, 4);
+  addWall('v', 1, 2, 4);
+  addWall('v', 1, 4, 1);
+  addWall('h', 1, 4, 4);
   //addWall(3, 'h', 1, 2, 4);
   //addWall(4, 'h', 1, 1, 0);
 }
