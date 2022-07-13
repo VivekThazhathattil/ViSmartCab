@@ -55,6 +55,7 @@ public:
   void step(int actionCode, int state, int &nextState, int &reward, bool &done);
   double getMaxQForState(int &state);
   std::string actionCodeToString(int &code);
+  void saveOtherStats(std::string fileName, int epochs, int score);
   void saveQTableToFile(std::string fileName);
   void getQTableFromFile();
 };

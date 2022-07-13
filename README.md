@@ -8,6 +8,10 @@
 
 # ViSmartCab
 
+![alt text](.res/sample_new.png)
+![alt text](.res/time.png)
+![alt text](.res/score.png)
+
 This project is an attempt to implement OpenAI Taxi-v2 in C++. 
 
 It uses a simple [Q-learning](https://en.wikipedia.org/wiki/Q-learning) ([RL](https://en.wikipedia.org/wiki/Reinforcement_learning)) model written from scratch in C++. For graphical output, SFML (Simple and Fast Multimedia Library) is used.
@@ -26,14 +30,16 @@ Here are the instructions to build and run this app in any Linux system:
 * Navigate to the repo directory: `cd vismartcab`	
 * Execute `make build` from the current directory. This will build the program.  Make sure you have SFML libraries in your system.
 
-Simply delete the file `saveData/qTable.dat` to start a fresh training session.
-You may also replace the file `saveData/qTable.dat` with another file of the same name to resume training that session.
+Run `make clean; make` to remove any previous sessions and to start a fresh new session.
+You may also replace the file `saveData/qTable.dat` with similar file of the same name to resume training for that session.
 
 ### Features
 
 * Press up arrow and down arrow to slow down/ speed up the simulation/training.
 * Autosaves `Reward Table` so that it can be reused if a run is halted for some unforseen reason and the user wishes to continue training.
 * Displays important information pertaining to the run alongside the graphical window.
+* `saveData/stats.dat` stores the score and time-taken for all the episodes thus far.
+* Configure your own walls easily using the function `addWall(orientation, length, origin_x, origin_y)` in `src/wall.cpp`. Specify `orientation` to be horizontal using 'h' or vertical using 'v', 1 unit of wall length being sidelength of the grid and `origin_x` and `origin_y` specifies the coordinates of the wall origin. Recompile after configuration to switch to use your wall setup.
 
 ### Issues
 

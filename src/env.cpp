@@ -300,6 +300,17 @@ std::string Env::actionCodeToString(int &code) {
   return text;
 }
 
+void Env::saveOtherStats(std::string fileName, int epochs, int score){
+    std::ofstream statsFile;
+    statsFile.open(fileName, std::ios_base::app);
+    if(!statsFile.is_open()){
+        std::cerr << "There was a problem opening the stats file!\n";
+        exit(1);
+    }
+    statsFile << iterator << " " << epochs << " " << score << std::endl;
+    statsFile.close();
+}
+
 void Env::saveQTableToFile(std::string fileName) {
   std::ofstream qFile;
   qFile.open(fileName, std::fstream::trunc);

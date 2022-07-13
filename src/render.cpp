@@ -13,13 +13,13 @@ Render::Render()
     : window(sf::RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y),
                               "SMARTCAB in C++!", sf::Style::Close)) {
   std::srand(time(0));
-  if (!parkingLotTexture.loadFromFile("res/road.png")) {
+  if (!parkingLotTexture.loadFromFile("res/green.png")) {
     printf("error loading parkingLotTexture from file\n");
   }
   if (!cabTexture.loadFromFile("res/cab.png")) {
     printf("error loading parkingLotTexture from file\n");
   }
-  if (!wallTexture.loadFromFile("res/wall.png")) {
+  if (!wallTexture.loadFromFile("res/walls.jpg")) {
     printf("error loading parkingLotTexture from file\n");
   }
 }
@@ -363,6 +363,7 @@ void Render::learn(std::vector<sf::RectangleShape> &pl, sf::RectangleShape &cab,
     }
     env.iterator = iter;
     env.saveQTableToFile("./saveData/qTable.dat");
+    env.saveOtherStats("./saveData/stats.dat", epochs, score);
   }
 }
 
