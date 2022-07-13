@@ -1,16 +1,13 @@
 <p align = "left">
   <a href="https://github.com/VivekThazhathattil/vismartcab">
-    <img height="400" src = "res/execution.gif">
-    <img height="400" src = "res/mid_learn.gif">
+    <img width="500" src = "res/sample_new.png">
+    <img width="500" src = "res/time.png">
+    <img width="500" src = "res/score.png">
   </a>
 </p>
 
 
 # ViSmartCab
-
-![alt text](.res/sample_new.png)
-![alt text](.res/time.png)
-![alt text](.res/score.png)
 
 This project is an attempt to implement OpenAI Taxi-v2 in C++. 
 
