@@ -11,6 +11,10 @@ public:
   sf::Texture parkingLotTexture;
   sf::Texture cabTexture;
   sf::Texture wallTexture;
+
+  sf::Texture srcTexture, destTexture;
+  sf::RectangleShape srcBlimp, destBlimp;
+
   Render();
   ~Render();
 

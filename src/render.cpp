@@ -17,11 +17,19 @@ Render::Render()
     printf("error loading parkingLotTexture from file\n");
   }
   if (!cabTexture.loadFromFile("res/cab.png")) {
-    printf("error loading parkingLotTexture from file\n");
+    printf("error loading cab texture from file\n");
   }
   if (!wallTexture.loadFromFile("res/walls.jpg")) {
-    printf("error loading parkingLotTexture from file\n");
+    printf("error loading wall texture from file\n");
   }
+  if (!srcTexture.loadFromFile("res/passenger_entry.png")) {
+    printf("error loading passenger_entry texture from file\n");
+  }
+  if (!destTexture.loadFromFile("res/passenger_exit.png")) {
+    printf("error loading passenger_exit texture from file\n");
+  }
+  srcBlimp.setTexture(&srcTexture, true);
+  destBlimp.setTexture(&destTexture, true);
 }
 Render::~Render() {}
 
@@ -45,22 +53,6 @@ void Render::runSimulation() {
   createParkingLot(parkingLot);
   createRGBYMarkings(textR, textG, textB, textY, font);
   updateFigure(cab, wall, textR, textG, textB, textY);
-
-  /*	printf("%d\n",env.encodeNEditState(3,1,2,0));
-          updateFigure(cab, wall, textR, textG, textB, textY);*/
-
-  /*	while(window.isOpen()){
-                  sf::Event e;
-                  while(window.pollEvent(e))
-                  {
-                          if (e.type == sf::Event::Closed)
-                                  window.close();
-                  }
-                  window.clear();
-                  drawNDisplay(parkingLot, cab, wall, textR, textG, textB,
-     textY);
-          } */
-
   learn(parkingLot, cab, wall, textR, textG, textB, textY);
 }
 
@@ -137,8 +129,11 @@ void Render::createCab(sf::RectangleShape &cab) {
   cab.setPosition(sf::Vector2f(offset.x + i * GRID_SIZE + GRID_SIZE / 2,
                                offset.y + j * GRID_SIZE + GRID_SIZE / 2));
   cab.setSize(sf::Vector2f(CAB_X, CAB_Y));
-  if (env.passenger.getPassengerStatus())
+  if (env.passenger.getPassengerStatus()){
+    srcBlimp.setPosition(sf::Vector2f(offset.x + i * GRID_SIZE + GRID_SIZE / 2,
+                               offset.y + j * GRID_SIZE + GRID_SIZE / 2));
     cab.setFillColor(sf::Color(0, 255, 0, 255));
+  }
   else
     cab.setFillColor(sf::Color::White);
   cab.setScale(2.5, 1.0);
@@ -223,6 +218,21 @@ void Render::createPassenger(sf::Text &R, sf::Text &G, sf::Text &B,
     Y.setFillColor(sf::Color::Cyan);
     break;
   }
+
+  sf::Vector2f offset = getOffset();
+  float relativePosX = (float)(2*env.passenger.pickUpPos.x + 1) / 2;
+  float relativePosY = (float)(2*env.passenger.pickUpPos.y + 1) / 2;
+  srcBlimp.setOrigin(srcBlimp.getGlobalBounds().width / 2, srcBlimp.getGlobalBounds().height / 2);
+  srcBlimp.setPosition(sf::Vector2f(offset.x + relativePosX * GRID_SIZE,
+              offset.y + relativePosY * GRID_SIZE));
+  srcBlimp.setSize(sf::Vector2f(GRID_SIZE/2, GRID_SIZE/2));
+
+  relativePosX = (float)(2*env.passenger.dropOffPos.x + 1) / 2;
+  relativePosY = (float)(2*env.passenger.dropOffPos.y + 1) / 2;
+  destBlimp.setOrigin(destBlimp.getGlobalBounds().width / 2, destBlimp.getGlobalBounds().height / 2);
+  destBlimp.setPosition(sf::Vector2f(offset.x + relativePosX * GRID_SIZE,
+              offset.y + relativePosY * GRID_SIZE));
+  destBlimp.setSize(sf::Vector2f(GRID_SIZE/2, GRID_SIZE/2));
 }
 
 void Render::drawNDisplay(std::vector<sf::RectangleShape> &pl,
@@ -241,9 +251,11 @@ void Render::drawNDisplay(std::vector<sf::RectangleShape> &pl,
   window.draw(G);
   window.draw(B);
   window.draw(Y);
+  window.draw(destBlimp);
   window.draw(info);
 
   window.draw(cab);
+  window.draw(srcBlimp);
   for (int i = 0; i < wall.size(); i++) {
     window.draw(wall[i]);
   }
@@ -314,7 +326,7 @@ void Render::learn(std::vector<sf::RectangleShape> &pl, sf::RectangleShape &cab,
             }
             else if(e.mouseButton.button == sf::Mouse::Right){
                 sf::Vector2f offset = getOffset();
-                env.wall.destroyWall(e.mouseButton.x - (int)(offset.x), e.mouseButton.y - (int)(offset.y));
+                env.wall.destroyWall();
                 env.initializeRewardTable();
                 createWall(wall);
             }

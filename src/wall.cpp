@@ -132,21 +132,35 @@ bool Wall::wallAlreadyExists(int x, int y, char orientation){
     for(int i = 0; i < wallPos.size(); ++i){
         WallPosition wp = wallPos[i];
         if(getWallType(wp) == 'H' && orientation == 'h'){
-            if(y == wp.y0 && wp.x0 <= x && x <= wp.x1)
+            if(y == wp.y0 && x == wp.x0){
+                printf("Horizontal wall already exists at (%d,%d)", x, y);
                 return true;
+            }
         }
         else if(getWallType(wp) == 'V' && orientation == 'v')
-            if(x == wp.x0 && wp.y0 <= y && y <= wp.y1)
+            if(x == wp.x0 && y == wp.y0){
+                printf("Vertical wall already exists at (%d,%d)", x, y);
                 return true;
+            }
     }
     return false;
 }
 
 void Wall::buildWall(int x, int y){
-  int tolerance = TOLERANCE; // pixels
-  int xTol = x % GRID_SIZE;
-  int yTol = y % GRID_SIZE;
-  printf("---mouse(x,y) = (%d, %d)\n", x, y);
+  int tolerance, xTol, xTol0, xTol1, yTol, yTol0, yTol1;
+  tolerance = TOLERANCE; // pixels
+                         
+  xTol0 = x % GRID_SIZE;
+  xTol1 = GRID_SIZE - (x % GRID_SIZE);
+  xTol = xTol0 < xTol1 ? xTol0 : xTol1;
+
+  yTol0 = y % GRID_SIZE;
+  yTol1 = GRID_SIZE - (y % GRID_SIZE);
+  yTol = yTol0 < yTol1 ? yTol0 : yTol1;
+
+  printf("<<<<<<<<xTol0 = %d, xTol1 = %d, xTol = %d\n", xTol0, xTol1, xTol);
+  printf("---mouse(x,y) = (%d, %d)\n ---mouse(xTol, yTol) = (%d,%d)\n TOLERANCE=%d", x, y, xTol, yTol, tolerance);
+
   if(xTol <= yTol && xTol < tolerance){
     x = x / GRID_SIZE;
     y = y / GRID_SIZE;
@@ -166,21 +180,8 @@ void Wall::buildWall(int x, int y){
   return;
 }
 
-void Wall::destroyWall(int x, int y){
-  int tolerance = TOLERANCE; // pixels
-  int xTol = x % GRID_SIZE;
-  int yTol = y % GRID_SIZE;
-  if(xTol <= yTol && (xTol < tolerance || GRID_SIZE - xTol < tolerance)){
-    x = x / GRID_SIZE;
-    y = y / GRID_SIZE;
-    if(wallAlreadyExists(x, y, 'v'))
-      removeWall(x, y, 'V');
-  }
-  else if(yTol <= xTol && (yTol < tolerance || GRID_SIZE - yTol < tolerance)){
-    y = y / GRID_SIZE;
-    x = x / GRID_SIZE;
-    if(wallAlreadyExists(x, y, 'h'))
-      removeWall(x, y, 'H');
-  }
+void Wall::destroyWall(){
+  if(!wallPos.empty())
+    wallPos.pop_back();
   return;
 }

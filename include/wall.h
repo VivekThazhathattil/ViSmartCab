@@ -16,7 +16,7 @@ public:
   void removeWall(int x, int y, char orientation);
   int getNumWalls();
   void buildWall(int x, int y);
-  void destroyWall(int x, int y);
+  void destroyWall();
   bool wallAlreadyExists(int x, int y, char orientation);
   bool
   checkWallCollision(int &cabI, int &cabJ,

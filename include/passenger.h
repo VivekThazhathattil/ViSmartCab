@@ -6,8 +6,6 @@ private:
   Position pickUpGridPos;  // in pixels
   Position dropOffGridPos; // in pixels
 
-  Position pickUpPos;
-  Position dropOffPos; // in grid pts
   Position currPos;    // in grid pts
   char pickUpCode;     // one of R,G,B,Y
   char dropOffCode;    // one of R,G,B,y
@@ -16,6 +14,8 @@ private:
   int setCoords(bool isPickup, int key, char coord);
 
 public:
+  Position pickUpPos;
+  Position dropOffPos; // in grid pts
   int tempPosCode[NUM_GRIDS_X * NUM_GRIDS_Y * NUM_PASSENGER_STATES *
                   NUM_DEST_STATES]; // temporary variable to hold the spawn
                                     // position code when passengerIdx is set to
