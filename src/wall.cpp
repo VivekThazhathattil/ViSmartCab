@@ -10,9 +10,6 @@ Wall::Wall() {
   // set the coords in top-down order for horizontal walls and left-right order
   // for vertical walls
   //
-  addWall('h', 4, 0, 1);
-  addWall('h', 3, 0, 2);
-  addWall('h', 2, 0, 3);
   addWall('h', 1, 0, 4);
   addWall('v', 1, 3, 3);
   addWall('v', 1, 4, 3);
@@ -44,6 +41,31 @@ void Wall::addWall(char orientation, int length, int originX, int originY) {
     return;
 }
 
+void Wall::removeWall(int x, int y, char orientation){
+    int n = getNumWalls();
+    for(int i = 0; i < n; ++i){
+        WallPosition wp = wallPos[i];
+        if(getWallType(wp) == orientation){
+            if(orientation == 'V'){
+                if(wp.y0 <= y && y <= wp.y1){
+                    std::vector<WallPosition>::iterator it = wallPos.begin() + i;
+                    wallPos.erase(it);
+                    printf("Wall removed at (%d,%d)", x, y);
+                    break;
+                }
+            }
+            else
+                if(wp.x0 <= x && x <= wp.x1){
+                    std::vector<WallPosition>::iterator it = wallPos.begin() + i;
+                    wallPos.erase(it);
+                    printf("Wall removed at (%d,%d)", x, y);
+                    break;
+                }
+        }
+    }
+    return;
+}
+
 WallPosition Wall::getWallPosition(int num) {
     return wallPos[num]; 
 }
@@ -65,13 +87,13 @@ bool Wall::checkWallCollision(int &cabI, int &cabJ, int &action) {
         if(action == MOVE_DOWN && wallPos.y0 == cabJ + 1 
                 && (wallPos.x0 <= cabI && cabI < wallPos.x1)){
             flag = true;
-            printf("move-down Collision!\n");
+            //printf("move-down Collision!\n");
             break;
         }
         else if(action == MOVE_UP && wallPos.y0 == cabJ
                 && wallPos.x0 <= cabI && cabI < wallPos.x1){
             flag = true;
-            printf("move-up Collision!\n");
+            //printf("move-up Collision!\n");
             break;
         }
 
@@ -82,52 +104,16 @@ bool Wall::checkWallCollision(int &cabI, int &cabJ, int &action) {
         if(action == MOVE_LEFT && wallPos.x0 == cabI
                 && wallPos.y0 <= cabJ && cabJ < wallPos.y1){
             flag = true;
-            printf("move-left Collision!\n");
+            //printf("move-left Collision!\n");
             break;
         }
         else if(action == MOVE_RIGHT && wallPos.x0 == cabI + 1
                 && wallPos.y0 <= cabJ && cabJ < wallPos.y1){
             flag = true;
-            printf("move-right Collision!\n");
+            //printf("move-right Collision!\n");
             break;
         }
     }
-
-    /*
-    if (wallPos.x0 == cabI && wallPos.y0 == cabJ) {
-      if (getWallType(wallPos) == 'H') { // horizontal wall
-        if (action == MOVE_DOWN){
-          flag = true;
-          break;
-        }
-      } else if (getWallType(wallPos) == 'V') { // vertical wall
-        if (action == MOVE_RIGHT) {
-          //					std::cout<<"wall collision ("<<
-          // std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ")
-          //"<< std::to_string(int(action))<<std::endl;
-          flag = true;
-          break;
-        }
-      }
-    }
-
-    else if (wallPos.x1 == cabI && wallPos.y1 == cabJ) {
-      if (getWallType(wallPos) == 'H') { // horizontal wall
-        if (action == MOVE_UP){
-          flag = true;
-          break;
-        }
-      } else if (getWallType(wallPos) == 'V') { // vertical wall
-        if (action == MOVE_LEFT) {
-          //					std::cout<<"wall collision ("<<
-          // std::to_string(int(cabI)) << "," << std::to_string(int(cabJ))<< ")
-          //"<< std::to_string(int(action))<<std::endl;
-          flag = true;
-          break;
-        }
-      }
-    }
-    */
   }
   return flag;
 }
@@ -140,4 +126,61 @@ char Wall::getWallType(WallPosition &w) {
   if (w.y0 == w.y1)
     return 'H';
   return 'V';
+}
+
+bool Wall::wallAlreadyExists(int x, int y, char orientation){
+    for(int i = 0; i < wallPos.size(); ++i){
+        WallPosition wp = wallPos[i];
+        if(getWallType(wp) == 'H' && orientation == 'h'){
+            if(y == wp.y0 && wp.x0 <= x && x <= wp.x1)
+                return true;
+        }
+        else if(getWallType(wp) == 'V' && orientation == 'v')
+            if(x == wp.x0 && wp.y0 <= y && y <= wp.y1)
+                return true;
+    }
+    return false;
+}
+
+void Wall::buildWall(int x, int y){
+  int tolerance = TOLERANCE; // pixels
+  int xTol = x % GRID_SIZE;
+  int yTol = y % GRID_SIZE;
+  printf("---mouse(x,y) = (%d, %d)\n", x, y);
+  if(xTol <= yTol && xTol < tolerance){
+    x = x / GRID_SIZE;
+    y = y / GRID_SIZE;
+    if(!wallAlreadyExists(x, y, 'v')){
+        addWall('v', 1, x, y);
+        printf("Wall added at (%d,%d)", x, y);
+    }
+  }
+  else if(yTol <= xTol && yTol < tolerance){
+    y = y / GRID_SIZE;
+    x = x / GRID_SIZE;
+    if(!wallAlreadyExists(x, y, 'h')){
+        addWall('h', 1, x, y);
+        printf("Wall added at (%d,%d)", x, y);
+    }
+  }
+  return;
+}
+
+void Wall::destroyWall(int x, int y){
+  int tolerance = TOLERANCE; // pixels
+  int xTol = x % GRID_SIZE;
+  int yTol = y % GRID_SIZE;
+  if(xTol <= yTol && (xTol < tolerance || GRID_SIZE - xTol < tolerance)){
+    x = x / GRID_SIZE;
+    y = y / GRID_SIZE;
+    if(wallAlreadyExists(x, y, 'v'))
+      removeWall(x, y, 'V');
+  }
+  else if(yTol <= xTol && (yTol < tolerance || GRID_SIZE - yTol < tolerance)){
+    y = y / GRID_SIZE;
+    x = x / GRID_SIZE;
+    if(wallAlreadyExists(x, y, 'h'))
+      removeWall(x, y, 'H');
+  }
+  return;
 }

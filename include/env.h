@@ -17,7 +17,6 @@ private:
                           NUM_DEST_STATES * NUM_ACTIONS];
 
   void setupEncodeArr();
-  void initializeRewardTable();
 
   void learn(); // learning algorithm (headless)
 
@@ -50,6 +49,7 @@ public:
 
   void reset(); // reset the whole world
   void resetQTable();
+  void initializeRewardTable();
   void updateQTable();
   int getActionForMaxQValue(int &state);
   void step(int actionCode, int state, int &nextState, int &reward, bool &done);

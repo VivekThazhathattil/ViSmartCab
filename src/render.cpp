@@ -154,6 +154,7 @@ void Render::createWall(std::vector<sf::RectangleShape> &wall) {
   sf::RectangleShape rect;
   sf::Vector2f offset = getOffset();
   int numWalls = env.wall.getNumWalls();
+  wall.clear();
   for (int i = 0; i < numWalls; i++) {
     wp = env.wall.getWallPosition(i);
     if (wp.y0 == wp.y1) // horizontal wall
@@ -304,6 +305,20 @@ void Render::learn(std::vector<sf::RectangleShape> &pl, sf::RectangleShape &cab,
       while (window.pollEvent(e)) {
         if (e.type == sf::Event::Closed)
           window.close();
+        if(e.type == sf::Event::MouseButtonPressed){
+            if(e.mouseButton.button == sf::Mouse::Left){
+                sf::Vector2f offset = getOffset();
+                env.wall.buildWall(e.mouseButton.x - (int)(offset.x), e.mouseButton.y - (int)(offset.y));
+                env.initializeRewardTable();
+                createWall(wall);
+            }
+            else if(e.mouseButton.button == sf::Mouse::Right){
+                sf::Vector2f offset = getOffset();
+                env.wall.destroyWall(e.mouseButton.x - (int)(offset.x), e.mouseButton.y - (int)(offset.y));
+                env.initializeRewardTable();
+                createWall(wall);
+            }
+        }
         if (e.type == sf::Event::KeyPressed) {
           if (e.key.code == sf::Keyboard::Up) {
             adjustableWaitTime += 0.01;

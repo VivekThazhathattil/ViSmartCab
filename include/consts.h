@@ -43,4 +43,6 @@
 #define PICKUP 4
 #define DROPOFF 5
 
+#define TOLERANCE 10
+
 // wall location hardcoded into src/wall.cpp

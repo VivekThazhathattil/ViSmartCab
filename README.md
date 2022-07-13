@@ -37,6 +37,7 @@ You may also replace the file `saveData/qTable.dat` with similar file of the sam
 * Displays important information pertaining to the run alongside the graphical window.
 * `saveData/stats.dat` stores the score and time-taken for all the episodes thus far.
 * Configure your own walls easily using the function `addWall(orientation, length, origin_x, origin_y)` in `src/wall.cpp`. Specify `orientation` to be horizontal using 'h' or vertical using 'v', 1 unit of wall length being sidelength of the grid and `origin_x` and `origin_y` specifies the coordinates of the wall origin. Recompile after configuration to switch to use your wall setup.
+* Left click on the grid edges to create walls. Right click on a wall to remove it.
 
 ### Issues
 
