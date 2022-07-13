@@ -111,27 +111,27 @@ int Env::getNextState(int state, int action) {
   passengerDestPos = passenger.getPosFromLocCode(destIdx);
 
   switch (action) {
-  case 0: // south
+  case MOVE_DOWN: // south
     if (!wall.checkWallCollision(cabI, cabJ, action))
       code = encode(cabI, cabJ + 1, passengerIdx, destIdx);
     break;
 
-  case 1: // north
+  case MOVE_UP: // north
     if (!wall.checkWallCollision(cabI, cabJ, action))
       code = encode(cabI, cabJ - 1, passengerIdx, destIdx);
     break;
 
-  case 2: // east
+  case MOVE_RIGHT: // east
     if (!wall.checkWallCollision(cabI, cabJ, action))
       code = encode(cabI + 1, cabJ, passengerIdx, destIdx);
     break;
 
-  case 3: // west
+  case MOVE_LEFT: // west
     if (!wall.checkWallCollision(cabI, cabJ, action))
       code = encode(cabI - 1, cabJ, passengerIdx, destIdx);
     break;
 
-  case 4: // pickup
+  case PICKUP: // pickup
     if (passengerIdx != 4)
       if (passengerSpawnPos.x == cabI && passengerSpawnPos.y == cabJ &&
           passengerIdx != 4) {
@@ -141,7 +141,7 @@ int Env::getNextState(int state, int action) {
         code = encode(cabI, cabJ, passengerIdx, destIdx);
       }
     break;
-  case 5: // dropoff
+  case DROPOFF: // dropoff
     if (passengerIdx == 4 && passengerDestPos.x == cabI &&
         passengerDestPos.y == cabJ) {
       //				printf("passenger dropped off at

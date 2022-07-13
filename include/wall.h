@@ -4,8 +4,7 @@
 
 class Wall {
 private:
-  WallPosition wallPos[NUM_WALLS];
-  //std::vector<WallPosition> wallPos(NUM_WALLS);
+  std::vector<WallPosition> wallPos;
   char getWallType(WallPosition &w);
 
 public:
@@ -13,7 +12,8 @@ public:
   ~Wall();
 
   WallPosition getWallPosition(int num);
-  void addWall(int wallIdx, char orientation, int length, int originX, int originY);
+  void addWall(char orientation, int length, int originX, int originY);
+  int getNumWalls();
   bool
   checkWallCollision(int &cabI, int &cabJ,
                      int &action); // should check for boundary cases as well

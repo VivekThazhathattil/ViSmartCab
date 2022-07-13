@@ -2,6 +2,7 @@
 #include "../include/consts.h"
 #include "../include/position.h"
 #include <unistd.h>
+#include <cstdlib>
 
 #define IX(x, y) ((x) + (y) * (NUM_GRIDS_X))
 #define E(x, y)                                                                \
@@ -152,25 +153,26 @@ void Render::createWall(std::vector<sf::RectangleShape> &wall) {
   WallPosition wp;
   sf::RectangleShape rect;
   sf::Vector2f offset = getOffset();
-  for (int i = 0; i < NUM_WALLS; i++) {
+  int numWalls = env.wall.getNumWalls();
+  for (int i = 0; i < numWalls; i++) {
     wp = env.wall.getWallPosition(i);
-    if (wp.x0 == wp.x1) // horizontal wall
+    if (wp.y0 == wp.y1) // horizontal wall
     {
       rect.setOrigin(sf::Vector2f(0, WALL_Y / 2));
-      rect.setPosition(sf::Vector2f(offset.x + GRID_SIZE * wp.x1,
-                                    offset.y + GRID_SIZE * wp.y1));
-      rect.setSize(sf::Vector2f(GRID_SIZE, WALL_Y));
+      rect.setPosition(sf::Vector2f(offset.x + GRID_SIZE * wp.x0,
+                                    offset.y + GRID_SIZE * wp.y0));
+      rect.setSize(sf::Vector2f(GRID_SIZE * abs(wp.x0 - wp.x1), WALL_Y));
       rect.setFillColor(sf::Color::White);
       rect.setOutlineThickness(0);
       rect.setOutlineColor(sf::Color::White);
       rect.setTexture(&wallTexture);
       wall.push_back(rect);
-    } else if (wp.y0 == wp.y1) // vertical wall
+    } else if (wp.x0 == wp.x1) // vertical wall
     {
       rect.setOrigin(sf::Vector2f(WALL_X / 2, 0));
-      rect.setPosition(sf::Vector2f(offset.x + GRID_SIZE * wp.x1,
-                                    offset.y + GRID_SIZE * wp.y1));
-      rect.setSize(sf::Vector2f(WALL_X, GRID_SIZE));
+      rect.setPosition(sf::Vector2f(offset.x + GRID_SIZE * wp.x0,
+                                    offset.y + GRID_SIZE * wp.y0));
+      rect.setSize(sf::Vector2f(WALL_X, GRID_SIZE * abs(wp.y0 - wp.y1)));
       rect.setFillColor(sf::Color::White);
       rect.setOutlineThickness(1);
       rect.setOutlineColor(sf::Color::Black);

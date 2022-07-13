@@ -28,9 +28,9 @@ void Cab::setCurrPosition(int &x, int &y) {
   else if (y > currPos.y)
     setOrientation(180);
   else if (x < currPos.x)
-    setOrientation(90);
-  else
     setOrientation(270);
+  else
+    setOrientation(90);
   currPos.x = x;
   currPos.y = y;
 }
