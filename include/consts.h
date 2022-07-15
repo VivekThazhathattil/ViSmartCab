@@ -34,7 +34,7 @@
 
 #define ALPHA 0.1
 #define GAMMA 0.6
-#define EPSILON 0.1
+#define EPSILON 0.5
 
 #define MOVE_DOWN 0
 #define MOVE_UP 1

@@ -345,6 +345,19 @@ void Render::learn(std::vector<sf::RectangleShape> &pl, sf::RectangleShape &cab,
       }
       window.clear();
       float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+
+      /* ----- I'm messing about in this section ---- */
+      int desiredNumEpisodes = 100; // exploration almost ceases to exist (except after allowedEpochs) after these many episodes.
+      float allowedEpochs = 30.0; // after this time, the cab starts exploring more thinking that he's stuck.
+      epsilon = iter < desiredNumEpisodes 
+          ? EPSILON * (desiredNumEpisodes - iter) / desiredNumEpisodes 
+          : 0.01; /* one possibility */
+      epsilon = epochs > allowedEpochs 
+          ? EPSILON * (epochs / (epochs + allowedEpochs)) 
+          : epsilon;
+      /* ------- ------- */
+
+      if(epochs)
       if (r < epsilon) {
         mode = "Explore";
         actionCode = std::rand() % NUM_ACTIONS; // exploration
