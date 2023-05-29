@@ -2,7 +2,6 @@
   <a href="https://github.com/VivekThazhathattil/vismartcab">
     <img width="500" src = "res/sample_new.png">
     <img width="500" src = "res/time.png">
-    <img width="500" src = "res/score.png">
   </a>
 </p>
 
